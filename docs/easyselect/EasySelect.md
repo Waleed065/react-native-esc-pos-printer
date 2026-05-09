@@ -1,61 +1,56 @@
 # EasySelect API
 
-EasySelect provides Epson QR/NFC/Beacon quick printer selection helpers.
+EasySelect provides Epson QR/NFC/beacon helpers to derive printer metadata and targets.
 
 ## Import
 
-```tsx
+```ts
 import { EasySelect, EasySelectDeviceType } from "react-native-esc-pos-printer";
 ```
 
-## createQR
+## `createQR(options)`
 
-Creates Epson EasySelect QR payload from printer metadata.
+Creates an Epson EasySelect QR payload.
 
-```tsx
-const qrData = await EasySelect.createQR({
+```ts
+const qr = await EasySelect.createQR({
   printerName: "TM-m30III",
   deviceType: EasySelectDeviceType.BLUETOOTH,
   macAddress: "AA:BB:CC:DD:EE:FF",
 });
 ```
 
-## parseQR
+## `parseQR(data)`
 
-Parses Epson EasySelect QR payload and returns printer metadata.
+Parses QR payload into `EasySelectInfo`.
 
-```tsx
-const info = await EasySelect.parseQR(qrData);
-
-// info.deviceType
-// info.printerName
-// info.macAddress
-// info.target (iOS)
-// info.serialNumber / info.ssid / info.passphrase (Android when available)
+```ts
+const info = await EasySelect.parseQR(qr);
 ```
 
-## parseNFC
+## `parseNFC(options?)`
 
-Starts an NFC read session and parses Epson EasySelect payload from detected NFC tag data.
+Parses NFC tag payloads.
 
-```tsx
-const infos = await EasySelect.parseNFC({
-  timeout: 5000,
-});
+Platform behavior:
 
-// infos: EasySelectInfo[]
+- Android: requires an enabled NFC adapter; rejects unsupported when NFC is unavailable.
+- iOS: requires NFC reading availability (`NFCNDEFReaderSession.readingAvailable`).
+
+```ts
+const infos = await EasySelect.parseNFC({ timeout: 5000 });
 ```
 
-Platform notes:
+## `parseBeacon(options)`
 
-- Android: uses NFC reader mode. Device must support NFC and NFC must be enabled.
-- iOS: uses `NFCNDEFReaderSession`.
+Parses beacon payload for matching Epson beacon parameters.
 
-## parseBeacon
+Platform behavior:
 
-Starts iBeacon ranging and parses Epson EasySelect payload from the first matching beacon.
+- iOS: supported.
+- Android: exported for API parity, rejects with `ERR_UNSUPPORTED`.
 
-```tsx
+```ts
 const info = await EasySelect.parseBeacon({
   uuid: "00000000-0000-0000-0000-000000000000",
   major: 100,
@@ -64,36 +59,21 @@ const info = await EasySelect.parseBeacon({
 });
 ```
 
-Platform notes:
+## Platform support
 
-- iOS: supported. Requires location authorization for beacon ranging.
-- Android: currently returns unsupported error.
+| API           | Android     | iOS |
+| ------------- | ----------- | --- |
+| `createQR`    | Yes         | Yes |
+| `parseQR`     | Yes         | Yes |
+| `parseNFC`    | Yes         | Yes |
+| `parseBeacon` | No (`ERR_UNSUPPORTED`) | Yes |
 
 ## Types
 
-`EasySelectInfo`
+- EasySelect response and option types are exported from the package root.
+- Core shape references are also documented in [deviceInfo](../interfaces/deviceInfo.md).
 
-- `deviceType: number`
-- `printerName: string`
-- `macAddress: string`
-- `target?: string`
-- `serialNumber?: string`
-- `ssid?: string`
-- `passphrase?: string`
+## Permission reminders
 
-`EasySelectCreateQROptions`
-
-- `printerName: string`
-- `deviceType: number`
-- `macAddress: string`
-
-`EasySelectParseNFCOptions`
-
-- `timeout?: number`
-
-`EasySelectParseBeaconOptions`
-
-- `uuid: string`
-- `major?: number`
-- `minor?: number`
-- `timeout?: number`
+- iOS `parseNFC`: requires `NFCReaderUsageDescription`.
+- iOS `parseBeacon`: requires `NSLocationWhenInUseUsageDescription`.

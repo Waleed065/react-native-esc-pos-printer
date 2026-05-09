@@ -1,153 +1,148 @@
-<p align="center">
-  <img src="./docs/assets/printer.png"
-     alt="Printer"
-/>
-</p>
+# react-native-esc-pos-printer (Fork)
 
-|  [![npm version](https://badge.fury.io/js/react-native-esc-pos-printer.svg)](https://badge.fury.io/js/react-native-esc-pos-printer)  |
-|---|
+Unofficial React Native Epson TM printer bridge powered by Epson ePOS SDK Android v2.36.0 and Epson ePOS SDK iOS v2.36.0.
 
-## Features
- - Printer-only fork: Epson printer discovery, EasySelect, and print-command APIs
- - Supports **LAN/TCP**, **Bluetooth Classic**, and **USB** printer flows
- - `PORTTYPE_BLUETOOTH_LE` discovery filter is **iOS only**
- - Supports Android ABIs: **armeabi-v7a**, **arm64-v8a**, **x86**, **x86_64**
- - Focused on **Epson ePOS iOS/Android SDK integration (v2.36.0)**
- - Print receipts natively and from React Native views
- - Android integration is **New Architecture (TurboModule) only**
- - iOS integration uses Epson **dynamic** `libepos2.xcframework`
- - Includes typed **EasySelect** `createQR`/`parseQR`/`parseNFC`/`parseBeacon` APIs
- - **Clear errors descriptions**
- - Proxy-like API makes it **easy to add new commands**
+This fork is focused on stable printer flows, explicit platform behavior, and clear production verification.
 
-> [!NOTE]
-> BLE parsing/ranging parity: `parseBeacon` is currently iOS-only. Android returns unsupported for beacon parsing.
+## Scope
 
+- In scope: discovery, connection, print command APIs, status/settings, EasySelect helpers.
+- Out of scope: non-printer Epson peripheral runtime APIs.
 
-## Installation
+## SDK Baseline
 
-### React Native
+- Android: Epson ePOS SDK v2.36.0
+- iOS: Epson ePOS SDK v2.36.0
 
-> [!WARNING]  
-> For react-native lower than 0.76.x version, use react-native-esc-pos-printer 4.3.3 or lower
+See [docs/SDK.md](docs/SDK.md) for artifact-level details.
+
+## Requirements
+
+- React Native app (bare or Expo prebuild workflow).
+- Android New Architecture is required for this package.
+- iOS minimum deployment target is 15.0.
+
+## Install
 
 ```sh
 yarn add react-native-esc-pos-printer
 ```
 
-> [!IMPORTANT]
-> This fork requires React Native New Architecture on Android.
-> In your app `android/gradle.properties`, set `newArchEnabled=true`.
->
-> iOS minimum deployment target is **15.0**.
-
-### Expo
+or
 
 ```sh
-npx expo install react-native-esc-pos-printer
-npx expo prebuild
+npm install react-native-esc-pos-printer
 ```
 
-### Also complete [this required steps](./docs/INSTALLATION.md)
+Complete platform setup in [docs/INSTALLATION.md](docs/INSTALLATION.md).
 
-> [!IMPORTANT]
-> If you use EasySelect `parseNFC` or `parseBeacon` on iOS, additional Info.plist permissions are required.
-> See [docs/INSTALLATION.md](./docs/INSTALLATION.md#ios-easyselect-permissions).
-
-## Usage
-
-### Discover printers
+## Quick Usage
 
 ```tsx
-import { usePrintersDiscovery } from 'react-native-esc-pos-printer';
+import React, { useEffect } from "react";
+import { Button, View } from "react-native";
+import {
+  Printer,
+  PrinterConstants,
+  usePrintersDiscovery,
+} from "react-native-esc-pos-printer";
 
-function App() {
-  const { start, isDiscovering, printers } =
-    usePrintersDiscovery();
+export default function App() {
+  const { start, printers } = usePrintersDiscovery();
 
-    useEffect(() => {
-      start();
-    }, []);
-}
-```
+  useEffect(() => {
+    start({
+      autoStop: true,
+      timeout: 10000,
+    });
+  }, [start]);
 
-### Print
+  const printFirstDiscovered = async () => {
+    const first = printers[0];
+    if (!first) return;
 
-```tsx
-import { Printer } from 'react-native-esc-pos-printer';
+    const printer = new Printer({
+      target: first.target,
+      deviceName: first.deviceName,
+    });
 
-function App() {
-  const { start, isDiscovering, printers } =
-    usePrintersDiscovery();
+    try {
+      await Printer.tryToConnectUntil(
+        printer,
+        (status) => status.online.status === "TRUE",
+        { maxAttempts: 3 },
+      );
 
-    useEffect(() => {
-      start();
-    }, []);
-
-    const print = async () => {
-      // printing on all discovered printers
-      for (const printerData of printers) {
-        const printerInstance = new Printer({
-          target: printerData.target,
-          deviceName: printerData.deviceName,
-        });
-
-        try {
-          await Printer.tryToConnectUntil(
-            printerInstance,
-            (status) => status.online.statusCode === PrinterConstants.TRUE
-          );
-          await printerInstance.addText('DUDE!');
-          await printerInstance.addFeedLine();
-          await printerInstance.addCut();
-          await printerInstance.sendData();
-        } finally {
-          await printerInstance.disconnect();
-        }
-      }
+      await printer.addTextAlign(PrinterConstants.ALIGN_CENTER);
+      await printer.addText("HELLO EPSON\n");
+      await printer.addFeedLine(1);
+      await printer.addCut(PrinterConstants.CUT_FEED);
+      await printer.sendData();
+    } finally {
+      await printer.disconnect();
     }
+  };
 
-  return <Button title="Print" onPress={print} />;
+  return (
+    <View>
+      <Button title="Print" onPress={printFirstDiscovered} />
+    </View>
+  );
 }
-
 ```
 
-### Target string expectations
+More examples: [docs/QUICK_START.md](docs/QUICK_START.md)
 
-Always use the exact `target` emitted by discovery/EasySelect parsing.
-Do not manually construct or normalize the `target` string.
+## EasySelect
 
-Common examples you will see:
+```tsx
+import { EasySelect, EasySelectDeviceType } from "react-native-esc-pos-printer";
 
-- `TCP:192.168.0.10`
-- `BT:AA:BB:CC:DD:EE:FF`
-- `USB:...` (platform-specific descriptor)
+const qr = await EasySelect.createQR({
+  printerName: "TM-m30III",
+  deviceType: EasySelectDeviceType.TCP,
+  macAddress: "AA:BB:CC:DD:EE:FF",
+});
 
-The exact format is SDK-controlled and can differ by transport/platform.
+const parsed = await EasySelect.parseQR(qr);
+```
+
+EasySelect docs: [docs/easyselect/EasySelect.md](docs/easyselect/EasySelect.md)
+
+## Platform Notes
+
+- `PORTTYPE_BLUETOOTH_LE` discovery filter is iOS-only.
+- `EasySelect.parseBeacon` is iOS-only. Android returns unsupported.
+- `pairBluetoothDevice` performs pairing on iOS, and resolves as a no-op on Android.
+- Discovery start may trigger Android location-settings resolution on supported API levels.
+- iOS does not use the Android location-settings flow (parity success/failure events only).
+- `EasySelect.parseNFC` requires platform NFC capability and enabled hardware/session support.
+- Android simulator does not represent real printer hardware behavior.
+- Always use the exact `target` produced by discovery/EasySelect.
 
 ## Documentation
-1. [Discovery API](./docs/discovery/discovery.md)
-2. [Printer API](./docs/printer/Printer.md)
-3. [EasySelect API](./docs/easyselect/EasySelect.md)
-4. [Examples](./docs/QUICK_START.md)
-5. [Supported devices](./docs/SUPPORTED_DEVICES.md)
-6. [SDK information (v2.36.0)](./docs/SDK.md)
-7. [Production verification matrix](./docs/PRODUCTION_VERIFICATION_MATRIX.md)
 
-## Sponsor this project
-If you like what I'm doing and want to support me, you can:
+- [Documentation Index](docs/INDEX.md)
+- [Installation](docs/INSTALLATION.md)
+- [Quick Start](docs/QUICK_START.md)
+- [SDK Baseline](docs/SDK.md)
+- [Production Verification Matrix](docs/PRODUCTION_VERIFICATION_MATRIX.md)
+- [Troubleshooting](docs/TROUBLESHOOTING.md)
+- [Migration v2.27 to v2.36](docs/MIGRATION_v2.27_to_v2.36.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Platform Differences](docs/PLATFORM_DIFFERENCES.md)
+- [Best Practices](docs/BEST_PRACTICES.md)
+- [Performance](docs/PERFORMANCE.md)
+- [Android SDK user manual PDF](docs/ePOS_SDK_Android_um_en_revAK.pdf)
+- [Android SDK migration guide PDF](docs/ePOS_SDK_Android_Migration_Guide_en_revE.pdf)
+- [iOS SDK user manual PDF](docs/ePOS_SDK_iOS_um_en_revAJ.pdf)
+- [iOS SDK migration guide PDF](docs/ePOS_SDK_iOS_Migration_Guide_en_revE.pdf)
 
-<p align="left">
-  <a href="https://buymeacoffee.com/tr3v3r" target="_blank">
-    <img width="500"  src="./docs/assets/coffee.png" alt="Buy me a coffee" />
-  </a>
-</p>
+## Verification Report
 
-## Known issues
+Current integration verification for the v2.36 baseline is documented at:
 
-1. It's not possible to print and discover on Android simulator.
-
-2. If you have an issue with using Flipper on iOS real device, [try this](./docs/flipperWorkaround.md) workaround.
+- [docs/VERIFICATION_REPORT_v2.36.0.md](docs/VERIFICATION_REPORT_v2.36.0.md)
 
 ## License
 

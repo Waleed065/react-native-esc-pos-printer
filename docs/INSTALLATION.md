@@ -1,141 +1,120 @@
-
 # Installation
 
-- [Bare React Native](#bare-react-native)
-- [Expo](#expo)
+## Baseline Requirements
 
+- Android New Architecture must be enabled (`newArchEnabled=true`).
+- iOS minimum deployment target must be 15.0.
+- Install pods after dependency install on iOS.
 
-## React Native
+## Bare React Native
 
-### Android
-Add the following permissions to `android/app/src/main/AndroidManifest.xml`
-
-```xml
-  <uses-permission android:name="android.permission.INTERNET" />
-
-  <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
-      android:usesPermissionFlags="neverForLocation"/>
-  <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
-
-  <!-- Request legacy permissions on older devices. -->
-  <uses-permission android:name="android.permission.BLUETOOTH"
-      android:maxSdkVersion="30"/>
-  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
-      android:maxSdkVersion="30"/>
-  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
-      android:maxSdkVersion="30"/>
-  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"
-      android:maxSdkVersion="28"/>
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18"/>
-  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="18"/>
-```
-
-#### React Native New Architecture (Android)
-
-This fork is TurboModule-based on Android and requires `newArchEnabled=true` in your app `android/gradle.properties`.
-
-#### Supported Android ABIs
-
-This package ships Epson native binaries for the following Android ABIs:
-
-- `armeabi-v7a`
-- `arm64-v8a`
-- `x86`
-- `x86_64`
-
-If your app overrides `reactNativeArchitectures`, keep `armeabi-v7a` enabled unless you intentionally drop 32-bit ARM device support.
-
-See explanation of permissions [here](./androidPermissions.md)
-
-### iOS
-
-Minimum deployment target is **iOS 15.0**.
-
-This fork uses Epson SDK 2.36 dynamic framework packaging (`libepos2.xcframework`) and `libeposeasyselect.xcframework`.
-Running `pod install` will wire these vendored frameworks from `package/ios/PrinterSDK`.
+### 1. Install package
 
 ```sh
+yarn add react-native-esc-pos-printer
+```
+
+or
+
+```sh
+npm install react-native-esc-pos-printer
+```
+
+### 2. Android setup
+
+Ensure your app manifest includes required Epson transport permissions.
+
+File: `android/app/src/main/AndroidManifest.xml`
+
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.NFC" />
+
+<uses-feature
+    android:name="android.hardware.nfc"
+    android:required="false" />
+
+<uses-permission
+    android:name="android.permission.BLUETOOTH_SCAN"
+    android:usesPermissionFlags="neverForLocation" />
+<uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
+<uses-permission
+    android:name="android.permission.BLUETOOTH"
+    android:maxSdkVersion="30" />
+<uses-permission
+    android:name="android.permission.BLUETOOTH_ADMIN"
+    android:maxSdkVersion="30" />
+<uses-permission
+    android:name="android.permission.ACCESS_FINE_LOCATION"
+    android:maxSdkVersion="30" />
+<uses-permission
+    android:name="android.permission.ACCESS_COARSE_LOCATION"
+    android:maxSdkVersion="28" />
+```
+
+If your app overrides RN architecture ABIs, keep `armeabi-v7a` if you need 32-bit support.
+
+File: `android/gradle.properties`
+
+```properties
+newArchEnabled=true
+reactNativeArchitectures=armeabi-v7a,arm64-v8a,x86,x86_64
+```
+
+### 3. iOS setup
+
+Set minimum iOS version to 15.0 or higher.
+
+Run:
+
+```sh
+cd ios
 pod install
 ```
 
-### iOS EasySelect permissions
+Add required Info.plist keys in your app:
 
-If you use EasySelect runtime scanners, add the following:
+- `NSBluetoothAlwaysUsageDescription`
+- `NSLocalNetworkUsageDescription`
+- `UISupportedExternalAccessoryProtocols` contains `com.epson.escpos`
 
-- `parseNFC`: add `NFCReaderUsageDescription` and enable the **Near Field Communication Tag Reading** capability.
-- `parseBeacon`: add `NSLocationWhenInUseUsageDescription`.
+If you use EasySelect iOS runtime scanners:
 
-Optional (only if your app needs background location flows):
+- `NFCReaderUsageDescription` for `parseNFC`
+- `NSLocationWhenInUseUsageDescription` for `parseBeacon`
 
-- `NSLocationAlwaysAndWhenInUseUsageDescription`
+For LAN discovery on iOS 14+, local-network permission prompt must be accepted.
 
-Platform parity note:
+## Expo (prebuild)
 
-- `parseBeacon` is iOS-only in this fork. Android currently returns unsupported.
-
-
-#### Set the item in the Information Property List.
-For iOS13 or later, add Privacy-Bluetooth Always Usage Description.
-1. In Project Navigator, select *.plist. (The file name will be Project name-info.)
-2. In the pop-up menu, select Add Row.
-3. Select "Privacy-Bluetooth Always Usage Description".
-4. Enter the intended use of Bluetooth in the "Value" field. (Example: Use this to communicate with the printer.)
-
-<img src="./assets/ios-install-0.png"
-     alt="Indoor Building Map Android"
-     height="300"
-/>
-
-##### When the Bluetooth or USB is used, set the protocol name. Set the protocol name according to the following procedure:
-
-1. In Project Navigator, select *.plist. (The file name will be Project name-info.)
-2. In the pop-up menu, select Add Row.
-3. Select "Supported external accessory protocols".
-4. Expand the items added in Step 3.
-5. Enter com.epson.escpos as the Value for Item 0.
-
-<img src="./assets/ios-install.png"
-     alt="Indoor Building Map Android"
-     height="300"
-/>
-
----
-## Expo
-
-Modify `app.json`:
-
-### Android
-```JSON
-{
-  "android": {
-    "permissions": [
-     "android.permission.INTERNET",
-     "android.permission.BLUETOOTH_SCAN",
-     "android.permission.BLUETOOTH_CONNECT",
-     "android.permission.BLUETOOTH",
-     "android.permission.BLUETOOTH_ADMIN",
-     "android.permission.ACCESS_FINE_LOCATION",
-     "android.permission.ACCESS_COARSE_LOCATION",
-     "android.permission.WRITE_EXTERNAL_STORAGE",
-     "android.permission.READ_EXTERNAL_STORAGE"
-     ]
-  }
-}
+```sh
+npx expo install react-native-esc-pos-printer
+npx expo prebuild
 ```
 
-See explanation of permissions [here](./androidPermissions.md)
+Then ensure equivalent Android permissions and iOS Info.plist keys are present in `app.json` or `app.config.*`.
 
-### iOS
+Example iOS fragment:
 
-```JSON
+```json
 {
   "ios": {
     "infoPlist": {
-      "NSBluetoothAlwaysUsageDescription": "Use this to communicate with the printer.",
-      "NFCReaderUsageDescription": "Use this to read Epson EasySelect NFC tags.",
-      "NSLocationWhenInUseUsageDescription": "Use this to scan nearby Epson beacons.",
+      "NSBluetoothAlwaysUsageDescription": "Use Bluetooth to discover and connect to Epson printers.",
+      "NSLocalNetworkUsageDescription": "Use local network to discover Epson LAN printers.",
+      "NFCReaderUsageDescription": "Use NFC to parse Epson EasySelect tags.",
+      "NSLocationWhenInUseUsageDescription": "Use location to range Epson EasySelect beacons.",
       "UISupportedExternalAccessoryProtocols": ["com.epson.escpos"]
     }
   }
 }
 ```
+
+## Post-install sanity check
+
+1. Discovery can start and stop without native errors.
+2. At least one connect/print/disconnect cycle completes on real hardware.
+3. iOS pod install resolves both `libepos2.xcframework` and `libeposeasyselect.xcframework`.
+
+For permission rationale details, see [androidPermissions.md](androidPermissions.md).

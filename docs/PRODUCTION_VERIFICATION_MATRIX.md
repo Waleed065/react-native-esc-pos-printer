@@ -1,91 +1,55 @@
-# Production Verification Matrix (Printer-Only)
+# Production Verification Matrix
 
-This checklist is for production-readiness verification of this fork as a printer-only React Native bridge.
+This matrix tracks what is already proven in the current v2.36 integration cycle and what still needs execution.
 
-## Scope
+## Proven in current cycle
 
-- Printer discovery
-- Printer command/connection runtime
-- EasySelect QR/NFC/Beacon helpers
-- Android + iOS parity where supported by Epson SDKs
+### Consumer app: pos-app integration
 
-## Build-time verification (completed)
+- Fork dependency consumed from GitHub tarball (`4.5.0`, fork commit pinned).
+- iOS native permission/protocol declarations present for Epson flows.
+- Android native permission declarations present for Epson flows.
 
-Library package (`package/`):
+### Real hardware runtime (iOS, TM-T82III, LAN/TCP)
 
-- [x] `npm run typecheck`
-- [x] `npm run prepare`
+| Test                  | Status | Evidence summary                     |
+| --------------------- | ------ | ------------------------------------ |
+| Connection + status   | PASS   | Connected and online status returned |
+| Sample receipt        | PASS   | Receipt printed                      |
+| Barcode + QR          | PASS   | Ticket printed with barcode and QR   |
+| Read printer settings | PASS   | Paper width, density, speed returned |
+| Cash drawer pulse     | PASS   | Drawer command sent successfully     |
+| Sound command         | PASS   | Sound command sent successfully      |
 
-Consumer app validation (`pos-app` with local tarball install):
+## Not yet executed in current cycle
 
-- [x] `npx tsc --noEmit --pretty false`
-- [x] `./android/gradlew app:assembleDebug`
-- [x] `xcodebuild -workspace pos.xcworkspace -scheme pos -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' build`
+| Area                                                              | Status  |
+| ----------------------------------------------------------------- | ------- |
+| Android hardware runtime matrix                                   | NOT RUN |
+| USB transport runtime matrix (Android/iOS)                        | NOT RUN |
+| Bluetooth Classic runtime matrix (Android/iOS)                    | NOT RUN |
+| iOS Bluetooth LE discovery runtime matrix                         | NOT RUN |
+| EasySelect runtime matrix (createQR/parseQR/parseNFC/parseBeacon) | NOT RUN |
+| Long-run stress (50+ consecutive jobs per transport)              | NOT RUN |
 
-## Connection transport matrix (real hardware)
+## Build and static gates (current cycle)
 
-| Transport                     | Android | iOS                           | Expected target sample | Status               |
-| ----------------------------- | ------- | ----------------------------- | ---------------------- | -------------------- |
-| TCP/LAN                       | Yes     | Yes                           | `TCP:192.168.0.10`     | Pending hardware run |
-| Bluetooth Classic             | Yes     | Yes                           | `BT:AA:BB:CC:DD:EE:FF` | Pending hardware run |
-| USB                           | Yes     | Yes                           | `USB:...`              | Pending hardware run |
-| Bluetooth LE discovery filter | No      | Yes (`PORTTYPE_BLUETOOTH_LE`) | SDK-provided target    | Pending hardware run |
+| Gate                                                        | Status |
+| ----------------------------------------------------------- | ------ |
+| Consumer app TypeScript (`npx tsc --noEmit --pretty false`) | PASS   |
 
-Notes:
+## Acceptance criteria for production sign-off
 
-- Always use the exact `target` emitted by discovery/EasySelect.
-- Do not manually construct target strings.
+1. All required transports for your deployment are PASS on real hardware.
+2. EasySelect pathways you use are PASS on target platforms.
+3. Recovery paths are validated (offline, cover open, paper end).
+4. Stress run completes without memory/leak/reconnect regression.
 
-## EasySelect matrix (real hardware)
+## Regression policy
 
-| API           | Android     | iOS | Notes                                                       | Status               |
-| ------------- | ----------- | --- | ----------------------------------------------------------- | -------------------- |
-| `createQR`    | Yes         | Yes | Build QR payload from printer metadata                      | Pending hardware run |
-| `parseQR`     | Yes         | Yes | Parse Epson QR payload                                      | Pending hardware run |
-| `parseNFC`    | Yes         | Yes | iOS requires NFC capability and `NFCReaderUsageDescription` | Pending hardware run |
-| `parseBeacon` | Unsupported | Yes | iOS requires location permission                            | Pending hardware run |
+Re-run this matrix when any of the following change:
 
-## Printer command coverage matrix (real hardware)
-
-### Core flow
-
-- [ ] `initWithPrinterDeviceName`
-- [ ] `connect`
-- [ ] `beginTransaction` / `endTransaction`
-- [ ] `clearCommandBuffer`
-- [ ] `sendData`
-- [ ] `disconnect`
-
-### Common content commands
-
-- [ ] `addText` / `addTextLang` / `addTextAlign` / `addTextStyle` / `addTextSize`
-- [ ] `addFeedLine` / `addLineSpace` / `addCut` / `addPulse`
-- [ ] `addImage` / `addBarcode` / `addSymbol` / `addCommand`
-
-### Advanced parity commands
-
-- [ ] `addTextRotate` / `addTextFont` / `addHPosition` / `addFeedUnit`
-- [ ] `addLogo`
-- [ ] `addPageBegin` / `addPageEnd` / `addPageArea` / `addPageDirection` / `addPagePosition`
-- [ ] `addPageLine` / `addPageRectangle`
-- [ ] `addSound` / `addFeedPosition`
-- [ ] `addHLine` / `addVLineBegin` / `addVLineEnd`
-- [ ] `addLayout`
-- [ ] `addRotateBegin` / `addRotateEnd`
-
-### Status/setting APIs
-
-- [ ] `getStatus`
-- [ ] `getPrinterSetting`
-
-## Acceptance criteria
-
-- No command call returns Epson error codes under nominal conditions.
-- Output on paper matches the requested layout for each tested command group.
-- Repeated print cycles (>= 50 consecutive jobs per transport) complete without memory or connection regression.
-- Recovery path validated for offline/cover-open/paper-end states.
-
-## Regression guardrails
-
-- Re-run this matrix after Epson SDK updates, RN major updates, or native method-surface changes.
-- Keep Android and iOS method/constant parity in lockstep with documented platform differences only.
+- Epson SDK baseline.
+- React Native major version.
+- Native bridge method surface.
+- Permission and capability configuration.

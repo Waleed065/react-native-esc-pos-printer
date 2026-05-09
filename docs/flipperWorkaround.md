@@ -1,25 +1,15 @@
-# iOS real device flipper workaround
+# iOS Flipper note
 
-Issue - https://github.com/tr3v3r/react-native-esc-pos-printer/issues/44
+This package does not require a Flipper workaround by default.
 
-1) `yarn add patch-package postinstall-postinstall`. Details [here](https://www.npmjs.com/package/patch-package)
-2) Put [this file](https://github.com/tr3v3r/react-native-esc-pos-printer/blob/main/example/Flipper-Folly.podspec) to the root folder of your app.
-3) In the root dir create `patches` folder and create file `react-native+{you RN version}.patch`. With the [this content.](https://github.com/tr3v3r/react-native-esc-pos-printer/blob/main/example/patches/react-native%2B0.72.6.patch)
-4) in package.json in the `scripts` section add:
-```
- "scripts": {
-   "postinstall": "patch-package"
- }
- ```
- Now you can run `yarn` or `npm` and re-run `pods` installation.
+Older React Native projects may have OpenSSL/Flipper conflicts unrelated to this package's core APIs. If you hit a Flipper-only crash on iOS real devices:
 
- I've added this workaround to the example folder. Corresponding [commit here](https://github.com/tr3v3r/react-native-esc-pos-printer/commit/13f4ceefa11cd29ab98a2b83d9196a80e2847576).
+1. First verify the app without Flipper.
+2. Verify your React Native version and current Flipper pod versions.
+3. Apply a project-specific workaround only if the issue reproduces with your exact RN stack.
 
- **Explanation**:
- Since the crash was caused by the conflict between versions of the OpenSSL lib in the Flipper_Folly dependencies and iOS ESC POS SDK dependencies, I've tried to apply the version from the SDK to Flipper_Folly. For that, I had to modify Flipper_Folly podspec and specify manually the needed version for OpenSSL lib.
+Historical issue context:
 
-For me, it works. I've tried to run the app on a real device and tried to debug using Flipper.
-I'd really appreciate it if someone could share the feedback if the workaround works for them also.
+- https://github.com/tr3v3r/react-native-esc-pos-printer/issues/44
 
-P.S.
-And finally, we're trying to reach DEV team of EPSON iOS SDK to ask them to help with this also. Probably bump the version of the OpenSSL or at least provide a bit less "hacky" solution.
+For production printer validation, do not treat Flipper-only behavior as printer API parity failure.

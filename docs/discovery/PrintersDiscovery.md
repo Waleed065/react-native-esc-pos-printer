@@ -1,157 +1,77 @@
-# Class: PrintersDiscovery
-Controls the device discovery function.
+# Class API: PrintersDiscovery
+
+`PrintersDiscovery` is the class-based alternative to the hook API.
 
 ## Methods
-### start
 
-*start(`params`): `void`*
+### `start(params?: DiscoveryStartParams): Promise<void>`
 
-Starts searching for the specified device type. An event is generated for each device detected.
+Starts discovery.
 
-*By default search will be stopped after 5 seconds. To change this behavior, use the `timeout` parameter.*
+### `stop(): Promise<void>`
 
-##### Parameters
+Stops discovery.
 
-| **Name** | **Type** | **Description** |
-| --- | --- | --- |
-| params | [`DiscoveryStartParams`](../interfaces/discoveryStartParams.md) | The search params. |
+### `onDiscovery(listener): unsubscribe`
 
-##### Returns
+Subscribes to discovered-printer events.
 
-`void`
+Listener signature:
 
-##### Example
+```ts
+(printers: DeviceInfo[]) => void
+```
 
-```typescript
-PrintersDiscovery.start({
-  timeout: 2000,
-  filterOption: {
-    deviceModel: DiscoveryFilterOption.MODEL_ALL,
-  },
+### `onStatusChange(listener): unsubscribe`
+
+Subscribes to discovery status events.
+
+Status values:
+
+- `discovering`
+- `inactive`
+
+### `onError(listener): unsubscribe`
+
+Subscribes to discovery errors.
+
+### `pairBluetoothDevice(macAddress?: string): Promise<void>`
+
+iOS helper for Bluetooth pairing.
+On Android, this resolves without starting an OS pairing flow.
+
+## Platform behavior
+
+- `start()` runs the Android permission/location-settings path where required by API level.
+- iOS does not use the Android location-settings dialog flow.
+
+## Example
+
+```ts
+import { PrintersDiscovery } from "react-native-esc-pos-printer";
+
+const removeDiscovery = PrintersDiscovery.onDiscovery((printers) => {
+  console.log(printers);
 });
-```
 
----
-
-### stop
-
-*stop(): `void`*
-
-Stops search.
-
-##### Returns
-
-`void`
-
-
-##### Example
-
-```typescript
-PrintersDiscovery.stop();
-```
-
----
-
-### onDiscovery
-
-*onDiscovery(`listener`): `remove()`*
-
-Adds a listener for the `discovery` event.
-
-##### Parameters
-
-| **Name** | **Type** | **Description** |
-| --- | --- | --- |
-| listener | (printers: [DeviceInfo](../interfaces/deviceInfo.md)[] ) => `void` | The listener function. |
-
-##### Returns
-
-`remove()`
-
-Function to remove listener.
-
-
-##### Example
-
-```typescript
-PrintersDiscovery.onDiscovery((printers) => {
-  console.log(printers); // will be called when every new printer is discovered
+const removeStatus = PrintersDiscovery.onStatusChange((status) => {
+  console.log(status);
 });
-```
 
----
-
-### onStatusChange
-
-*onStatusChange(`listener`): `remove()`*
-
-Adds a listener for the `statusChange` event.
-
-##### Parameters
-
-| **Name** | **Type** | **Description** |
-| --- | --- | --- |
-| listener | (status: 'discovering' | 'inactive' ) => `void` | The listener function. |
-
-##### Returns
-
-`remove()`
-
-Function to remove listener.
-
-#### Example
-
-```typescript
-PrintersDiscovery.onStatusChange((status) => {
-  console.log(status); // will be called when the discovery status changes
+const removeError = PrintersDiscovery.onError((error) => {
+  console.log(error);
 });
-```
----
 
-### onError
+await PrintersDiscovery.start({ timeout: 10000, autoStop: true });
 
-*onError(`listener`): `remove()`*
-
-Adds a listener for the `error` event.
-
-##### Parameters
-
-| **Name** | **Type** | **Description** |
-| --- | --- | --- |
-| listener | (error: [PrinterDiscoveryError](../interfaces/printerDiscoveryError.md) ) => `void` | The listener function. |
-
-##### Returns
-
-`remove()`
-
-Function to remove listener.
-
-#### Example
-
-```typescript
-PrintersDiscovery.onError((error) => {
-  console.log(error); // will be called when an error occurs
-});
+// Later
+await PrintersDiscovery.stop();
+removeDiscovery();
+removeStatus();
+removeError();
 ```
 
-### pairBluetoothDevice *(iOS only)*
+## See also
 
-*pairBluetoothDevice(`macAddress?: string`): `Promise<void>`*
-
-Controls pairing connection with a Bluetooth device. If macAddress is not provided, a list of available devices will be shown in native dialog.
-
-##### Parameters
-
-| **Name** | **Type** | **Description** |
-| --- | --- | --- |
-| macAddress | string | The BD address of the printer newly paired is returned. Format: BT:00:11:22:33:44:55 |
-
-##### Returns
-
-`Promise<void>`
-
-#### Example
-
-```typescript
-PrintersDiscovery.pairBluetoothDevice();
-```
+- [Discovery overview](discovery.md)
+- [Hook API](usePrintersDiscovery.md)

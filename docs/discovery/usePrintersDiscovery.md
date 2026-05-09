@@ -1,128 +1,68 @@
-# React Hook: usePrintersDiscovery
+# Hook API: usePrintersDiscovery
 
-Controls the device discovery function.
+`usePrintersDiscovery()` provides stateful discovery controls for React components.
 
-`usePrintersDiscovery()` returns discovery printers props
+## Returns
 
+### `start(params?: DiscoveryStartParams): Promise<void>`
 
-### Discovery printers props
+Starts discovery. If already discovering, repeated starts are ignored.
 
+Platform behavior:
 
-### start
+- Android: requests required runtime permissions and may trigger location-settings resolution.
+- iOS: starts discovery without the Android location-settings dialog flow.
 
-*start(`params`): `void`*
+Example:
 
-Starts searching for the specified device type. An event is generated for each device detected.
-
-*By default search will be stopped after 5 seconds. To change this behavior, use the `timeout` parameter.*
-
-##### Parameters
-
-| **Name** | **Type** | **Description** |
-| --- | --- | --- |
-| params | [`DiscoveryStartParams`](../interfaces/discoveryStartParams.md) | The search params. |
-
-##### Example
-
-```typescript
-const { start } = usePrintersDiscovery()
-
+```ts
 start({
-  timeout: 2000,
+  timeout: 8000,
+  autoStop: true,
   filterOption: {
-    deviceModel: DiscoveryFilterOption.MODEL_ALL,
+    portType: DiscoveryPortType.PORTTYPE_TCP,
   },
 });
 ```
 
----
+### `stop(): Promise<void>`
 
-### stop
+Stops discovery.
 
-*stop(): `void`*
+### `printers: DeviceInfo[]`
 
-Stops search.
+Current discovered devices list.
 
-##### Returns
+### `isDiscovering: boolean`
 
-`void`
+`true` while discovery is active.
 
-##### Example
+### `printerError: PrinterDiscoveryError | null`
 
-```typescript
-const { stop } = usePrintersDiscovery()
+Last discovery error, if any.
 
-stop();
-```
+### `pairBluetoothDevice(macAddress?: string): Promise<void>` (iOS-only behavior)
 
----
+Requests Bluetooth pairing dialog/operation on iOS.
+On Android this resolves without pairing flow (no-op).
 
-### printers
+## Types
 
-*printers: [DeviceInfo](../interfaces/deviceInfo.md)[]*
+- [DiscoveryStartParams](../interfaces/discoveryStartParams.md)
+- [DeviceInfo](../interfaces/deviceInfo.md)
+- [PrinterDiscoveryError](../interfaces/printerDiscoveryError.md)
 
-Returns the list of discovered devices.
-Will be update when every new printer is discovered
+## Usage pattern
 
-```typescript
-const { printers, start } = usePrintersDiscovery()
+```tsx
+import { usePrintersDiscovery } from "react-native-esc-pos-printer";
 
-start()
-console.log(printers)  // will be update when every new printer is discovered
-```
----
-### isDiscovering
-
-*isDiscovering: `boolean`*
-
-Returns the status of discovering process as boolean
-Resets to true when the search process is started again.
-
-```typescript
-const { isDiscovering, start, stop } = usePrintersDiscovery()
-
-start() // isDiscovering -> true
-...
-stop() // isDiscovering -> false
-```
-
----
-
-### printerError
-
-*printerError: [PrinterDiscoveryError](../interfaces/printerDiscoveryError.md) | `null`*
-
-Returns the error message if an error occurred during the search process. If no error occurred, returns `null`. Resets to null when the search process is started again.
-
-```typescript
-
-const { printerError, start } = usePrintersDiscovery()
-
-start()
-console.log(printerError)  // will be update if an error occurred during the search process
-```
-
-
-### pairBluetoothDevice *(iOS only)*
-
-*pairBluetoothDevice(`macAddress?: string`): `Promise<void>`*
-
-Controls pairing connection with a Bluetooth device. If macAddress is not provided, a list of available devices will be shown in native dialog.
-
-##### Parameters
-
-| **Name** | **Type** | **Description** |
-| --- | --- | --- |
-| macAddress | string | The BD address of the printer newly paired is returned. Format: BT:00:11:22:33:44:55 |
-
-##### Returns
-
-`Promise<void>`
-
-#### Example
-
-```typescript
-const { pairBluetoothDevice } = usePrintersDiscovery()
-
-pairBluetoothDevice();
+const {
+  start,
+  stop,
+  printers,
+  isDiscovering,
+  printerError,
+  pairBluetoothDevice,
+} = usePrintersDiscovery();
 ```
