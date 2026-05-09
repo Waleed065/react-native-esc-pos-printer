@@ -21,6 +21,23 @@ import {
 import { getProcessedError } from './utils';
 import { EscPosPrinterDiscovery } from '../specs';
 
+function toErrorCode(error: unknown): string {
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    typeof (error as { message?: unknown }).message === 'string'
+  ) {
+    return (error as { message: string }).message;
+  }
+
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  return String(error);
+}
+
 class PrintersDiscoveryClass {
   timeout: ReturnType<typeof setTimeout> | null = null;
   status: DiscoveryStatus = 'inactive';
@@ -55,7 +72,7 @@ class PrintersDiscoveryClass {
       }
     } catch (error) {
       this.setStatus('inactive');
-      this.triggerError('start', error as Error);
+      this.triggerError('start', error);
     }
   };
 
@@ -68,7 +85,7 @@ class PrintersDiscoveryClass {
 
       this.setStatus('inactive');
     } catch (error) {
-      this.triggerError('stop', error as Error);
+      this.triggerError('stop', error);
     }
   };
 
@@ -107,16 +124,23 @@ class PrintersDiscoveryClass {
   };
 
   public onDiscovery = (callback: (printers: DeviceInfo[]) => void) => {
-    const listener = EscPosPrinterDiscovery.onDiscovery(
-      (printer: RawDeviceInfo[]) => {
-        callback(
-          printer.map((info) => ({
+    const listener = EscPosPrinterDiscovery.onDiscovery((payload) => {
+      const printer = payload as RawDeviceInfo[];
+
+      callback(
+        printer.map((info) => {
+          const mappedDeviceType =
+            (DiscoveryDeviceTypeMapping[String(info.deviceType)] as
+              | DeviceInfo['deviceType']
+              | undefined) ?? 'TYPE_ALL';
+
+          return {
             ...info,
-            deviceType: DiscoveryDeviceTypeMapping[info.deviceType]!,
-          }))
-        );
-      }
-    );
+            deviceType: mappedDeviceType,
+          };
+        })
+      );
+    });
 
     return () => {
       listener.remove();
@@ -130,7 +154,7 @@ class PrintersDiscoveryClass {
       } catch (error) {
         throw getProcessedError({
           methodName: 'pairBluetoothDevice',
-          errorCode: error.message,
+          errorCode: toErrorCode(error),
           messagesMapping: PrinterPairBluetoothErrorMessageMapping,
           statusMapping: PrinterPairBluetoothErrorStatusMapping,
         });
@@ -140,10 +164,10 @@ class PrintersDiscoveryClass {
     }
   };
 
-  private triggerError = (methodName: string, error: Error) => {
+  private triggerError = (methodName: string, error: unknown) => {
     const processedError = getProcessedError({
       methodName,
-      errorCode: error.message,
+      errorCode: toErrorCode(error),
     });
 
     this.errorListeners.forEach((listener) => listener(processedError));

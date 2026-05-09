@@ -32,7 +32,6 @@ public class EscPosPrinterPackage extends TurboReactPackage {
     public ReactModuleInfoProvider getReactModuleInfoProvider() {
         return () -> {
             final Map<String, ReactModuleInfo> moduleInfos = new HashMap<>();
-            boolean isTurboModule = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
             moduleInfos.put(
                     EscPosPrinterModule.NAME,
                     new ReactModuleInfo(
@@ -42,7 +41,7 @@ public class EscPosPrinterPackage extends TurboReactPackage {
                             false, // needsEagerInit
                             true, // hasConstants
                             false, // isCxxModule
-                            isTurboModule // isTurboModule
+                                true // isTurboModule
             ));
             moduleInfos.put(
                     EscPosPrinterDiscoveryModule.NAME,
@@ -53,7 +52,7 @@ public class EscPosPrinterPackage extends TurboReactPackage {
                             false, // needsEagerInit
                             true, // hasConstants
                             false, // isCxxModule
-                            isTurboModule // isTurboModule
+                            true // isTurboModule
             ));
 
             return moduleInfos;

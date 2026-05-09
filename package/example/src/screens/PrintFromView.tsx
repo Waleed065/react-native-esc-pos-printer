@@ -1,5 +1,5 @@
 import { useRoute, type RouteProp } from '@react-navigation/native';
-import { memo, useMemo, useRef, useState } from 'react';
+import { memo, useMemo, useRef, useState, type ComponentRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Printer, PrinterConstants } from 'react-native-esc-pos-printer';
 import { Button, ScreenTitle } from '../components';
@@ -14,7 +14,7 @@ export const PrintFromView = memo(() => {
     params: { printer },
   } = useRoute<ImageFromViewPrintRouteProp>();
 
-  const ref = useRef<View>(null);
+  const ref = useRef<ComponentRef<typeof View>>(null);
 
   const [printing, setPrinting] = useState(false);
 
@@ -31,28 +31,23 @@ export const PrintFromView = memo(() => {
     try {
       setPrinting(true);
 
-      await printerInstance.addQueueTask(async () => {
-        await Printer.tryToConnectUntil(
-          printerInstance,
-          (status) => status.online.statusCode === PrinterConstants.TRUE
-        );
+      await Printer.tryToConnectUntil(
+        printerInstance,
+        (status) => status.online.statusCode === PrinterConstants.TRUE
+      );
 
-        await printerInstance.addFeedLine();
+      await printerInstance.addFeedLine();
 
-        await Printer.addViewShot(printerInstance, {
-          viewNode: ref.current,
-        });
-
-        await printerInstance.addCut();
-
-        const result = await printerInstance.sendData();
-
-        await printerInstance.disconnect();
-        return result;
+      await Printer.addViewShot(printerInstance, {
+        viewNode: ref.current,
       });
-    } catch (e) {
-      await printerInstance.disconnect();
+
+      await printerInstance.addCut();
+      await printerInstance.sendData();
+    } catch {
+      // Error state is reflected in the UI using current status/logs.
     } finally {
+      await printerInstance.disconnect();
       setPrinting(false);
     }
   };

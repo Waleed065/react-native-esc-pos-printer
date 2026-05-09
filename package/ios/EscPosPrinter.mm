@@ -82,13 +82,13 @@ RCT_EXPORT_METHOD(connect: (nonnull NSString*)target
                   reject:(RCTPromiseRejectBlock)reject)
 {
     int result = EPOS2_SUCCESS;
-    ThePrinter* thePrinter = nil;
     @synchronized (self) {
-        thePrinter = [objManager_ getObject:target];
+        ThePrinter* thePrinter = [objManager_ getObject:target];
         if (thePrinter == nil) {
             result = [EposStringHelper getInitErrorResultCode];
+            reject(@"event_failure", [@(result) stringValue], nil);
         } else {
-            int result = [thePrinter connect:timeout];
+            result = [thePrinter connect:timeout];
 
             if(result == EPOS2_SUCCESS) {
                 resolve(nil);
@@ -508,6 +508,7 @@ RCT_EXPORT_METHOD(sendData: (nonnull NSString*) target
                     @"data": @([EposStringHelper getInitErrorResultCode]),
                     @"type": @"result"
             } description], nil);
+            return;
         }
 
         [thePrinter sendData: timeout successHandler:^(NSDictionary *data){
@@ -532,6 +533,7 @@ RCT_EXPORT_METHOD(getPrinterSetting:(nonnull NSString*) target
                     @"data": @([EposStringHelper getInitErrorResultCode]),
                     @"type": @"result"
             } description], nil);
+            return;
         }
 
         [thePrinter getPrinterSetting: timeout type:type successHandler:^(NSDictionary *data){

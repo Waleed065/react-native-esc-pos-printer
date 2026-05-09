@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.module.annotations.ReactModule;
@@ -23,7 +22,6 @@ import com.epson.epos2.discovery.DeviceInfo;
 import com.epson.epos2.Epos2Exception;
 
 import com.facebook.react.bridge.UiThreadUtil;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableArray;
@@ -56,6 +54,11 @@ public class EscPosPrinterDiscoveryModule extends NativeEscPosPrinterDiscoverySp
   private final ReactApplicationContext reactContext;
 
   public static final String NAME = "EscPosPrinterDiscovery";
+  private static final int REQUEST_ENABLE_LOCATION_SETTINGS = 21001;
+  private static final String LOCATION_SETTING_ERROR_CODE = String.valueOf(Epos2Exception.ERR_FAILURE);
+
+  @Nullable
+  private Promise pendingLocationSettingPromise;
 
   public EscPosPrinterDiscoveryModule(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -77,20 +80,16 @@ public class EscPosPrinterDiscoveryModule extends NativeEscPosPrinterDiscoverySp
 
   @Override
   public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-    if (data != null && resultCode == Activity.RESULT_OK) {
-      if(BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
-        emitEnableLocationSettingSuccess();
-      } else {
-        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-        .emit("enableLocationSettingSuccess", "Success");
-      }
+    if (requestCode != REQUEST_ENABLE_LOCATION_SETTINGS) {
+      return;
+    }
+
+    if (resultCode == Activity.RESULT_OK) {
+      emitEnableLocationSettingSuccess();
+      resolvePendingLocationSettingPromise();
     } else {
-      if(BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
-        emitEnableLocationSettingFailure();
-      } else {
-      reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-          .emit("enableLocationSettingFailure", "Failure");
-      }
+      emitEnableLocationSettingFailure();
+      rejectPendingLocationSettingPromise(LOCATION_SETTING_ERROR_CODE);
     }
   }
 
@@ -104,18 +103,37 @@ public class EscPosPrinterDiscoveryModule extends NativeEscPosPrinterDiscoverySp
     return GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(reactContext) == ConnectionResult.SUCCESS;
   }
 
+  private void resolvePendingLocationSettingPromise() {
+    if (pendingLocationSettingPromise != null) {
+      pendingLocationSettingPromise.resolve(null);
+      pendingLocationSettingPromise = null;
+    }
+  }
+
+  private void rejectPendingLocationSettingPromise(String errorMessage) {
+    if (pendingLocationSettingPromise != null) {
+      pendingLocationSettingPromise.reject("event_failure", errorMessage);
+      pendingLocationSettingPromise = null;
+    }
+  }
+
   @ReactMethod
   public void enableLocationSetting(Promise promise) {
+    if (pendingLocationSettingPromise != null) {
+      promise.reject("event_failure", String.valueOf(Epos2Exception.ERR_PROCESSING));
+      return;
+    }
+
     boolean isGoogleServiceAvailable = isGoogleServiceAvailable();
 
     if (!isGoogleServiceAvailable) {
-      promise.resolve("SUCCESS");
+      promise.resolve(null);
       return;
     }
 
     Activity currentActivity = getCurrentActivity();
     if (currentActivity == null) {
-      promise.reject("Activity doesn't exist", "");
+      promise.reject("event_failure", String.valueOf(Epos2Exception.ERR_PARAM));
       return;
     }
 
@@ -131,10 +149,7 @@ public class EscPosPrinterDiscoveryModule extends NativeEscPosPrinterDiscoverySp
     task.addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
       @Override
       public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-        // All location settings are satisfied. The client can initialize
-        // location requests here.
-        // ...
-        promise.resolve("SUCCESS");
+        promise.resolve(null);
       }
     });
 
@@ -142,30 +157,27 @@ public class EscPosPrinterDiscoveryModule extends NativeEscPosPrinterDiscoverySp
       @Override
       public void onFailure(@NonNull Exception e) {
         if (e instanceof ResolvableApiException) {
-
-          // Location settings are not satisfied, but this can be fixed
-          // by showing the user a dialog.
+          pendingLocationSettingPromise = promise;
           try {
-            // Show the dialog by calling startResolutionForResult(),
-            // and check the result in onActivityResult().
-
             ResolvableApiException resolvable = (ResolvableApiException) e;
-            resolvable.startResolutionForResult(currentActivity, CommonStatusCodes.RESOLUTION_REQUIRED);
+            resolvable.startResolutionForResult(currentActivity, REQUEST_ENABLE_LOCATION_SETTINGS);
 
           } catch (IntentSender.SendIntentException sendEx) {
-            promise.reject("ERROR", "");
+            rejectPendingLocationSettingPromise(LOCATION_SETTING_ERROR_CODE);
+            emitEnableLocationSettingFailure();
           }
+
+          return;
         }
+
+        emitEnableLocationSettingFailure();
+        promise.reject("event_failure", LOCATION_SETTING_ERROR_CODE);
       }
     });
   }
 
-  private void sendEvent(ReactApplicationContext reactContext, String eventName, @Nullable WritableArray params) {
-    if(BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
-     emitOnDiscovery(params);
-    } else {
-     reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
-    }
+  private void sendEvent(@Nullable WritableArray params) {
+    emitOnDiscovery(params);
   }
 
   @ReactMethod
@@ -248,13 +260,15 @@ public class EscPosPrinterDiscoveryModule extends NativeEscPosPrinterDiscoverySp
             mPrinterList.pushMap(printerData);
           }
 
-          sendEvent(reactContext, "onDiscovery", mPrinterList);
+          sendEvent(mPrinterList);
         }
       });
     }
   };
 
+  @Override
+  @ReactMethod
   public void pairBluetoothDevice(String macAddress, Promise promise) {
-
+    promise.resolve(null);
   }
 }

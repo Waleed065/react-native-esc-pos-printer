@@ -1,8 +1,19 @@
-// @ts-ignore
 import wordwrap from 'wordwrapjs';
 import type { SpaceBetweenParams } from '../../types';
 
-function fillGap(symbol: string, length: number) {
+type WordwrapOptions = {
+  width: number;
+  break: boolean;
+  noTrim?: boolean;
+};
+
+type WordwrapModule = {
+  wrap(text: string, options: WordwrapOptions): string;
+};
+
+const typedWordwrap: WordwrapModule = wordwrap;
+
+function fillGap(symbol: string, length: number): string {
   return symbol.repeat(length);
 }
 
@@ -12,9 +23,9 @@ function getTextsWidths(
   textToWrapWidth: number,
   right: string,
   left: string
-) {
-  let leftTextWidth;
-  let rightTextWidth;
+): { leftTextWidth: number; rightTextWidth: number } {
+  let leftTextWidth: number;
+  let rightTextWidth: number;
 
   if (!textToWrapWidth) {
     const halfLength = Math.floor(fullLength / 2);
@@ -59,7 +70,7 @@ export const spaceBetween = (
     left
   );
 
-  const leftWrappedTextArray: string[] = wordwrap
+  const leftWrappedTextArray: string[] = typedWordwrap
     .wrap(left, {
       width: leftTextWidth,
       break: true,
@@ -67,7 +78,7 @@ export const spaceBetween = (
     })
     .split('\n');
 
-  const rightWrappedTextArray: string[] = wordwrap
+  const rightWrappedTextArray: string[] = typedWordwrap
     .wrap(right, {
       width: rightTextWidth,
       break: true,
@@ -85,7 +96,7 @@ export const spaceBetween = (
     (_, index) => {
       const leftText = leftWrappedTextArray[index] || '';
       const rightText = rightWrappedTextArray[index] || '';
-      const spacesAmount = length - leftText.length - rightText.length;
+      const spacesAmount = Math.max(0, length - leftText.length - rightText.length);
       const gaps =
         index === 0
           ? fillGap(gapSymbol, spacesAmount)

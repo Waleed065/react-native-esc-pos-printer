@@ -4,6 +4,7 @@ import {
   ConnectPrinterErrorMessageMapping,
   DisconnectPrinterErrorMessageMapping,
   InitPrinterErrorMessageMapping,
+  PrinterErrorResult,
   PrintErrorCodeMessageMapping,
   PrinterConstants,
   PrinterErrorCodeStatusMapping,
@@ -24,7 +25,9 @@ import type {
   AddTextStyleParams,
   PrinterInitParams,
   PrinterSettingsRawResponse,
+  PrinterSettingsResponse,
   PrinterStatusRawResponse,
+  PrinterStatusResponse,
 } from './types';
 import {
   BufferHelper,
@@ -36,16 +39,33 @@ import {
 
 import { EscPosPrinter } from '../specs';
 
+function getErrorCode(error: unknown): string {
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    typeof (error as { message?: unknown }).message === 'string'
+  ) {
+    return (error as { message: string }).message;
+  }
+
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  return String(error);
+}
+
 export class PrinterWrapper {
   private target: string;
-  private printerPaperWidth: number = null;
+  private printerPaperWidth: number | null = null;
   public currentFontWidth: number = 1;
 
   constructor(target: string) {
     this.target = target;
   }
 
-  init = async ({ deviceName, lang }: PrinterInitParams) => {
+  init = async ({ deviceName, lang }: PrinterInitParams): Promise<void> => {
     try {
       await EscPosPrinter.initWithPrinterDeviceName(
         this.target,
@@ -56,31 +76,31 @@ export class PrinterWrapper {
     } catch (error) {
       throwProcessedError({
         methodName: 'init',
-        errorCode: error.message,
+        errorCode: getErrorCode(error),
         messagesMapping: InitPrinterErrorMessageMapping,
       });
     }
   };
 
-  connect = async (timeout: number = 15000) => {
+  connect = async (timeout: number = 15000): Promise<void> => {
     try {
       await EscPosPrinter.connect(this.target, timeout);
     } catch (error) {
       throwProcessedError({
         methodName: 'connect',
-        errorCode: error.message,
+        errorCode: getErrorCode(error),
         messagesMapping: ConnectPrinterErrorMessageMapping,
       });
     }
   };
 
-  disconnect = async () => {
+  disconnect = async (): Promise<void> => {
     try {
       await EscPosPrinter.disconnect(this.target);
     } catch (error) {
       throwProcessedError({
         methodName: 'disconnect',
-        errorCode: error.message,
+        errorCode: getErrorCode(error),
         messagesMapping: DisconnectPrinterErrorMessageMapping,
       });
     }
@@ -92,79 +112,81 @@ export class PrinterWrapper {
    *
    * Disconnecting will automatically clear the command buffer.
    */
-  clearCommandBuffer = async () => {
+  clearCommandBuffer = async (): Promise<void> => {
     try {
       await EscPosPrinter.clearCommandBuffer(this.target);
     } catch (error) {
       throwProcessedError({
         methodName: 'clearCommandBuffer',
-        errorCode: error.message,
+        errorCode: getErrorCode(error),
         messagesMapping: CommonOperationErrorMessageMapping,
       });
     }
   };
 
-  addText = async (data: string) => {
+  addText = async (data: string): Promise<void> => {
     try {
       await EscPosPrinter.addText(this.target, data);
     } catch (error) {
       throwProcessedError({
         methodName: 'addText',
-        errorCode: error.message,
+        errorCode: getErrorCode(error),
         messagesMapping: CommonOperationErrorMessageMapping,
       });
     }
   };
 
-  addTextLang = async (lang: AddTextLangParam) => {
+  addTextLang = async (lang: AddTextLangParam): Promise<void> => {
     try {
       await EscPosPrinter.addTextLang(this.target, lang);
     } catch (error) {
       throwProcessedError({
         methodName: 'addTextLang',
-        errorCode: error.message,
+        errorCode: getErrorCode(error),
         messagesMapping: CommonOperationErrorMessageMapping,
       });
     }
   };
 
-  addFeedLine = async (line: number = 1) => {
+  addFeedLine = async (line: number = 1): Promise<void> => {
     try {
       await EscPosPrinter.addFeedLine(this.target, line);
     } catch (error) {
       throwProcessedError({
         methodName: 'addFeedLine',
-        errorCode: error.message,
+        errorCode: getErrorCode(error),
         messagesMapping: CommonOperationErrorMessageMapping,
       });
     }
   };
 
-  addLineSpace = async (linespc: number) => {
+  addLineSpace = async (linespc: number): Promise<void> => {
     try {
       await EscPosPrinter.addLineSpace(this.target, linespc);
     } catch (error) {
       throwProcessedError({
         methodName: 'addLineSpace',
-        errorCode: error.message,
+        errorCode: getErrorCode(error),
         messagesMapping: CommonOperationErrorMessageMapping,
       });
     }
   };
 
-  addCut = async (type: AddCutTypeParam = PrinterConstants.PARAM_DEFAULT) => {
+  addCut = async (
+    type: AddCutTypeParam = PrinterConstants.PARAM_DEFAULT
+  ): Promise<void> => {
     try {
       await EscPosPrinter.addCut(this.target, type);
     } catch (error) {
       throwProcessedError({
         methodName: 'addCut',
-        errorCode: error.message,
+        errorCode: getErrorCode(error),
         messagesMapping: CommonOperationErrorMessageMapping,
       });
     }
   };
 
-  sendData = async (timeout: number = 5000) => {
+  sendData = async (timeout: number = 5000): Promise<PrinterStatusResponse> => {
     try {
       const result = (await EscPosPrinter.sendData(
         this.target,
@@ -172,7 +194,7 @@ export class PrinterWrapper {
       )) as PrinterStatusRawResponse;
       return parsePrinterStatus(result);
     } catch (error) {
-      const { errorType, data } = processComplextError(error.message);
+      const { errorType, data } = processComplextError(getErrorCode(error));
 
       throwProcessedError({
         methodName: 'sendData',
@@ -192,12 +214,12 @@ export class PrinterWrapper {
   getPrinterSetting = async (
     type: PrinterGetSettingsType,
     timeout: number = 10000
-  ) => {
+  ): Promise<PrinterSettingsResponse> => {
     try {
       const isPrinterPaperWidthRequested =
         type === PrinterGetSettingsType.PRINTER_SETTING_PAPERWIDTH;
 
-      if (isPrinterPaperWidthRequested && this.printerPaperWidth) {
+      if (isPrinterPaperWidthRequested && this.printerPaperWidth !== null) {
         return parsePrinterSettings({ type, value: this.printerPaperWidth });
       }
 
@@ -213,7 +235,7 @@ export class PrinterWrapper {
 
       return parsePrinterSettings(result);
     } catch (error) {
-      const { errorType, data } = processComplextError(error.message);
+      const { errorType, data } = processComplextError(getErrorCode(error));
 
       throwProcessedError({
         methodName: 'getPrinterSetting',
@@ -230,7 +252,7 @@ export class PrinterWrapper {
     }
   };
 
-  getStatus = async () => {
+  getStatus = async (): Promise<PrinterStatusResponse> => {
     try {
       const result = (await EscPosPrinter.getStatus(
         this.target
@@ -239,7 +261,7 @@ export class PrinterWrapper {
     } catch (error) {
       throwProcessedError({
         methodName: 'getStatus',
-        errorCode: error.message,
+        errorCode: getErrorCode(error),
         messagesMapping: CommonOperationErrorMessageMapping,
       });
     }
@@ -253,9 +275,18 @@ export class PrinterWrapper {
     halftone = PrinterConstants.PARAM_DEFAULT,
     brightness = PrinterConstants.PARAM_DEFAULT,
     compress = PrinterConstants.PARAM_DEFAULT,
-  }: AddImageParams) => {
+  }: AddImageParams): Promise<void> => {
     try {
       const resolvedSource = Image.resolveAssetSource(source);
+
+      if (!resolvedSource) {
+        throwProcessedError({
+          methodName: 'addImage',
+          errorCode: String(PrinterErrorResult.ERR_PARAM),
+          messagesMapping: CommonOperationErrorMessageMapping,
+        });
+      }
+
       await EscPosPrinter.addImage(
         this.target,
         resolvedSource,
@@ -269,7 +300,7 @@ export class PrinterWrapper {
     } catch (error) {
       throwProcessedError({
         methodName: 'addImage',
-        errorCode: error.message,
+        errorCode: getErrorCode(error),
         messagesMapping: CommonOperationErrorMessageMapping,
       });
     }
@@ -282,7 +313,7 @@ export class PrinterWrapper {
     font = PrinterConstants.PARAM_DEFAULT,
     width = PrinterConstants.PARAM_UNSPECIFIED,
     height = PrinterConstants.PARAM_UNSPECIFIED,
-  }: AddBarcodeParams) => {
+  }: AddBarcodeParams): Promise<void> => {
     try {
       await EscPosPrinter.addBarcode(
         this.target,
@@ -296,7 +327,7 @@ export class PrinterWrapper {
     } catch (error) {
       throwProcessedError({
         methodName: 'addBarcode',
-        errorCode: error.message,
+        errorCode: getErrorCode(error),
         messagesMapping: CommonOperationErrorMessageMapping,
       });
     }
@@ -309,7 +340,7 @@ export class PrinterWrapper {
     width,
     height,
     size,
-  }: AddSymbolParams) => {
+  }: AddSymbolParams): Promise<void> => {
     try {
       await EscPosPrinter.addSymbol(
         this.target,
@@ -323,13 +354,13 @@ export class PrinterWrapper {
     } catch (error) {
       throwProcessedError({
         methodName: 'addSymbol',
-        errorCode: error.message,
+        errorCode: getErrorCode(error),
         messagesMapping: CommonOperationErrorMessageMapping,
       });
     }
   };
 
-  addCommand = async (uint8Array: Uint8Array) => {
+  addCommand = async (uint8Array: Uint8Array): Promise<void> => {
     try {
       const buffer = new BufferHelper();
       const base64String = buffer.bytesToString(uint8Array, 'base64');
@@ -337,7 +368,7 @@ export class PrinterWrapper {
     } catch (error) {
       throwProcessedError({
         methodName: 'addCommand',
-        errorCode: error.message,
+        errorCode: getErrorCode(error),
         messagesMapping: CommonOperationErrorMessageMapping,
       });
     }
@@ -346,13 +377,13 @@ export class PrinterWrapper {
   addPulse = async ({
     drawer = PrinterConstants.PARAM_DEFAULT,
     time = PrinterConstants.PARAM_DEFAULT,
-  }: AddPulseParams = {}) => {
+  }: AddPulseParams = {}): Promise<void> => {
     try {
       await EscPosPrinter.addPulse(this.target, drawer, time);
     } catch (error) {
       throwProcessedError({
         methodName: 'addPulse',
-        errorCode: error.message,
+        errorCode: getErrorCode(error),
         messagesMapping: CommonOperationErrorMessageMapping,
       });
     }
@@ -360,13 +391,13 @@ export class PrinterWrapper {
 
   addTextAlign = async (
     align: AddTextAlignParam = PrinterConstants.PARAM_DEFAULT
-  ) => {
+  ): Promise<void> => {
     try {
       await EscPosPrinter.addTextAlign(this.target, align);
     } catch (error) {
       throwProcessedError({
         methodName: 'addTextAlign',
-        errorCode: error.message,
+        errorCode: getErrorCode(error),
         messagesMapping: CommonOperationErrorMessageMapping,
       });
     }
@@ -375,7 +406,7 @@ export class PrinterWrapper {
   addTextSize = async ({
     width = PrinterConstants.PARAM_DEFAULT,
     height = PrinterConstants.PARAM_DEFAULT,
-  }: AddTextSizeParams = {}) => {
+  }: AddTextSizeParams = {}): Promise<void> => {
     try {
       await EscPosPrinter.addTextSize(this.target, width, height);
 
@@ -383,7 +414,7 @@ export class PrinterWrapper {
     } catch (error) {
       throwProcessedError({
         methodName: 'addTextSize',
-        errorCode: error.message,
+        errorCode: getErrorCode(error),
         messagesMapping: CommonOperationErrorMessageMapping,
       });
     }
@@ -391,13 +422,13 @@ export class PrinterWrapper {
 
   addTextSmooth = async (
     smooth: AddTextSmoothParam = PrinterConstants.TRUE
-  ) => {
+  ): Promise<void> => {
     try {
       await EscPosPrinter.addTextSmooth(this.target, smooth);
     } catch (error) {
       throwProcessedError({
         methodName: 'addTextSmooth',
-        errorCode: error.message,
+        errorCode: getErrorCode(error),
         messagesMapping: CommonOperationErrorMessageMapping,
       });
     }
@@ -408,13 +439,13 @@ export class PrinterWrapper {
     em = PrinterConstants.PARAM_DEFAULT,
     reverse = PrinterConstants.PARAM_DEFAULT,
     ul = PrinterConstants.PARAM_DEFAULT,
-  }: AddTextStyleParams = {}) => {
+  }: AddTextStyleParams = {}): Promise<void> => {
     try {
       await EscPosPrinter.addTextStyle(this.target, reverse, ul, em, color);
     } catch (error) {
       throwProcessedError({
         methodName: 'addTextStyle',
-        errorCode: error.message,
+        errorCode: getErrorCode(error),
         messagesMapping: CommonOperationErrorMessageMapping,
       });
     }

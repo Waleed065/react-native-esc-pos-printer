@@ -39,9 +39,9 @@
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
-    "prepare": "bob build",
+    "prepare": "bob build && node ./scripts/patch-ios-codegen.js",
     "release": "release-it --only-version",
-    "postinstall": "node ./scripts/movelib.js"
+    "postinstall": "node ./scripts/movelib.js && node ./scripts/patch-ios-codegen.js"
   },
   "keywords": [
     "react-native",
@@ -63,7 +63,6 @@
   },
   "dependencies": {
     "buffer": "6.0.3",
-    "p-queue": "7.4.1",
     "react-native-esc-pos-printer-sdk": "2.31.1",
     "wordwrapjs": "5.1.0"
   },

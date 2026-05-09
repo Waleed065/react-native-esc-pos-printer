@@ -2,8 +2,6 @@ import { PrinterDiscoveryError } from '../../core';
 import {
   DiscoveryErrorMessageMapping,
   DiscoveryErrorStatusMapping,
-  PrinterPairBluetoothErrorMessageMapping,
-  PrinterPairBluetoothErrorStatusMapping,
   DiscoveryErrorResult,
 } from '../constants';
 
@@ -15,23 +13,23 @@ export function getProcessedError({
 }: {
   methodName: string;
   errorCode: string;
-  messagesMapping?:
-    | typeof DiscoveryErrorMessageMapping
-    | typeof PrinterPairBluetoothErrorMessageMapping;
-  statusMapping?:
-    | typeof DiscoveryErrorStatusMapping
-    | typeof PrinterPairBluetoothErrorStatusMapping;
+  messagesMapping?: Record<string, string | undefined>;
+  statusMapping?: Record<string, string | undefined>;
 }) {
   const result = !isNaN(Number(errorCode))
     ? errorCode
     : DiscoveryErrorResult.ERR_FAILURE;
 
-  const message = messagesMapping[result];
-  const status = statusMapping[result];
+  const fallbackKey = String(DiscoveryErrorResult.ERR_FAILURE);
+  const message =
+    messagesMapping[result] ??
+    messagesMapping[fallbackKey] ??
+    'An unknown error occurred.';
+  const status = statusMapping[result] ?? statusMapping[fallbackKey] ?? 'ERR_FAILURE';
 
   return new PrinterDiscoveryError({
-    status: status,
-    message: message,
+    status,
+    message,
     methodName,
   });
 }

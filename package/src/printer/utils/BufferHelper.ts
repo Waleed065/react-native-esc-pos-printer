@@ -1,5 +1,13 @@
 import { Buffer } from 'buffer';
 
+type BufferLoadStream = {
+  on(event: 'data', listener: (chunk: Uint8Array) => void): void;
+  on(event: 'end', listener: () => void): void;
+  once(event: 'error', listener: (error: Error) => void): void;
+};
+
+type BufferLoadCallback = (error: Error | null, buffer: Buffer) => void;
+
 export class BufferHelper {
   buffers: Buffer[];
   size: number;
@@ -26,7 +34,10 @@ export class BufferHelper {
   }
 
   toBuffer(): Buffer {
-    // @ts-ignore
+    if (this.size === 0) {
+      return Buffer.alloc(0);
+    }
+
     return Buffer.concat(this.buffers, this.size);
   }
 
@@ -34,17 +45,21 @@ export class BufferHelper {
     return this.toBuffer().toString(encoding);
   }
 
-  load(stream: any, callback: any) {
-    stream.on('data', (trunk: Buffer) => {
-      this.concat(trunk);
+  load(stream: BufferLoadStream, callback: BufferLoadCallback): void {
+    stream.on('data', (chunk: Uint8Array) => {
+      this.concat(Buffer.from(chunk));
     });
+
     stream.on('end', () => {
       callback(null, this.toBuffer());
     });
-    stream.once('error', callback);
+
+    stream.once('error', (error: Error) => {
+      callback(error, this.toBuffer());
+    });
   }
 
-  bytesToString(data: Uint8Array, type: 'base64' | 'hex') {
+  bytesToString(data: Uint8Array, type: 'base64' | 'hex'): string {
     this.concat(Buffer.from(data));
     const buffer = this.toBuffer();
     return buffer.toString(type);

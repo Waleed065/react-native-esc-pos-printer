@@ -1,9 +1,15 @@
-import { FlatList, View } from 'react-native';
+import { FlatList, View, type ListRenderItem } from 'react-native';
+import type { DeviceInfo } from 'react-native-esc-pos-printer';
 import { PrinterItem } from '../PrinterItem';
 import { styles } from './styles';
 
-export const PrintersList = ({ printers, onPress }) => {
-  const renderItem = ({ item }) => {
+interface PrintersListProps {
+  printers: DeviceInfo[];
+  onPress: (printer: DeviceInfo) => void;
+}
+
+export const PrintersList = ({ printers, onPress }: PrintersListProps) => {
+  const renderItem: ListRenderItem<DeviceInfo> = ({ item }) => {
     return <PrinterItem printer={item} onPress={onPress} />;
   };
 

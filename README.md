@@ -9,9 +9,10 @@
 
 ## Features
  - Supports **BLE, LAN, USB** and **Wi-Fi** connection methods
+ - Supports Android ABIs: **armeabi-v7a**, **arm64-v8a**, **x86**, **x86_64**
+ - Focused on **Epson ePOS iOS/Android SDK integration**
  - Print receipts natively and from React Native views
- - Compatible with the **new architecture**
- - Build-in **queue mechanism**
+ - Android integration is **New Architecture (TurboModule) only**
  - **Clear errors descriptions**
  - Proxy-like API makes it **easy to add new commands**
 
@@ -26,6 +27,10 @@
 ```sh
 yarn add react-native-esc-pos-printer
 ```
+
+> [!IMPORTANT]
+> This fork requires React Native New Architecture on Android.
+> In your app `android/gradle.properties`, set `newArchEnabled=true`.
 
 ### Expo
 
@@ -66,28 +71,28 @@ function App() {
       start();
     }, []);
 
-    const print = () => {
+    const print = async () => {
       // printing on all discovered printers
-      printers.forEach(printersData => {
-          const printerInstance = new Printer({
-            target: printersData.target,
-            deviceName: printersData.deviceName,
-          });
+      for (const printerData of printers) {
+        const printerInstance = new Printer({
+          target: printerData.target,
+          deviceName: printerData.deviceName,
+        });
 
-          const res = await printerInstance.addQueueTask(async () => {
-            await Printer.tryToConnectUntil(
-              printerInstance,
-              (status) => status.online.statusCode === PrinterConstants.TRUE
-            );
-            await printerInstance.addText('DUDE!');
-            await printerInstance.addFeedLine();
-            await printerInstance.addCut();
-            const result = await printerInstance.sendData();
-            await printerInstance.disconnect();
-            return result;
-        })
-      })
-  }
+        try {
+          await Printer.tryToConnectUntil(
+            printerInstance,
+            (status) => status.online.statusCode === PrinterConstants.TRUE
+          );
+          await printerInstance.addText('DUDE!');
+          await printerInstance.addFeedLine();
+          await printerInstance.addCut();
+          await printerInstance.sendData();
+        } finally {
+          await printerInstance.disconnect();
+        }
+      }
+    }
 
   return <Button title="Print" onPress={print} />;
 }

@@ -30,6 +30,21 @@ Add the following permissions to `android/app/src/main/AndroidManifest.xml`
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="18"/>
 ```
 
+#### React Native New Architecture (Android)
+
+This fork is TurboModule-based on Android and requires `newArchEnabled=true` in your app `android/gradle.properties`.
+
+#### Supported Android ABIs
+
+This package ships Epson native binaries for the following Android ABIs:
+
+- `armeabi-v7a`
+- `arm64-v8a`
+- `x86`
+- `x86_64`
+
+If your app overrides `reactNativeArchitectures`, keep `armeabi-v7a` enabled unless you intentionally drop 32-bit ARM device support.
+
 See explanation of permissions [here](./androidPermissions.md)
 
 ### iOS

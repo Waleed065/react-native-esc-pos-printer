@@ -57,6 +57,7 @@ export function enableLocationAccessAndroid10() {
   if (platformVersion > 28) {
     let successListener: EventSubscription | null;
     let errorListener: EventSubscription | null;
+    let isSettled = false;
 
     function removeListeners() {
       successListener?.remove();
@@ -66,25 +67,40 @@ export function enableLocationAccessAndroid10() {
       errorListener = null;
     }
 
+    function resolveOnce(resolve: (value: boolean) => void) {
+      if (isSettled) return;
+      isSettled = true;
+      removeListeners();
+      resolve(true);
+    }
+
+    function rejectOnce(reject: (reason?: boolean) => void) {
+      if (isSettled) return;
+      isSettled = true;
+      removeListeners();
+      reject(false);
+    }
+
     return new Promise((res, rej) => {
       successListener = EscPosPrinterDiscovery.enableLocationSettingSuccess(
         () => {
-          removeListeners();
-          res(true);
+          resolveOnce(res);
         }
       );
 
       errorListener = EscPosPrinterDiscovery.enableLocationSettingFailure(
         () => {
-          removeListeners();
-          rej(false);
+          rejectOnce(rej);
         }
       );
 
-      EscPosPrinterDiscovery.enableLocationSetting().then(() => {
-        removeListeners();
-        res(true);
-      });
+      EscPosPrinterDiscovery.enableLocationSetting()
+        .then(() => {
+          resolveOnce(res);
+        })
+        .catch(() => {
+          rejectOnce(rej);
+        });
     });
   }
 

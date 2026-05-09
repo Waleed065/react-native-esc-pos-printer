@@ -1,4 +1,3 @@
-import type PQueueType from 'p-queue';
 import { PrinterWrapper } from './PrinterWrapper';
 import { PrinterGetSettingsType, PrinterModelLang } from './constants';
 import {
@@ -22,41 +21,18 @@ import type {
 } from './types';
 
 export class Printer {
-  private static instances: Map<string, Printer> = new Map();
-
   public readonly deviceName: string;
-  private lang: PrinterModelLang;
-  private printerWrapper: PrinterWrapper;
-
-  public queue: unknown;
+  private readonly lang: PrinterModelLang;
+  private readonly printerWrapper: PrinterWrapper;
 
   constructor({
     target,
     deviceName,
     lang = PrinterModelLang.MODEL_ANK,
   }: PrinterParams) {
-    if (Printer.instances.has(target)) {
-      return Printer.instances.get(target);
-    }
-
     this.deviceName = deviceName;
     this.lang = lang;
     this.printerWrapper = new PrinterWrapper(target);
-
-    this.initQueue();
-
-    Printer.instances.set(target, this);
-  }
-
-  initQueue() {
-    const PQueue = require('p-queue/dist').default;
-    this.queue = new PQueue({ concurrency: 1 });
-  }
-
-  addQueueTask<TaskResultType>(
-    task: () => Promise<TaskResultType>
-  ): Promise<TaskResultType | void> {
-    return (this.queue as PQueueType).add(task);
   }
 
   static addTextLine = addTextLine;

@@ -105,7 +105,7 @@ console.log(printerError)  // will be update if an error occurred during the sea
 
 ### pairBluetoothDevice *(iOS only)*
 
-*pairBluetoothDevice(`macAddress?: string`): `void`*
+*pairBluetoothDevice(`macAddress?: string`): `Promise<void>`*
 
 Controls pairing connection with a Bluetooth device. If macAddress is not provided, a list of available devices will be shown in native dialog.
 
@@ -117,7 +117,7 @@ Controls pairing connection with a Bluetooth device. If macAddress is not provid
 
 ##### Returns
 
-`void`
+`Promise<void>`
 
 #### Example
 

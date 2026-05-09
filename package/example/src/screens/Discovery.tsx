@@ -1,6 +1,9 @@
 import { memo } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import { usePrintersDiscovery } from 'react-native-esc-pos-printer';
+import {
+  usePrintersDiscovery,
+  type DeviceInfo,
+} from 'react-native-esc-pos-printer';
 import { PrintersList, Button, ScreenTitle } from '../components';
 import { useNavigation, type NavigationProp } from '@react-navigation/native';
 import type { RootStackParamList } from '../navigation/RootNavigator';
@@ -22,7 +25,7 @@ export const Discovery = memo(() => {
         <ScreenTitle title={'Discovery'} />
       </View>
       <PrintersList
-        onPress={(printer) => {
+        onPress={(printer: DeviceInfo) => {
           if (printer) {
             navigation.navigate('Printer', { printer });
           }

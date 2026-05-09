@@ -2,38 +2,63 @@ import type { Printer } from '../Printer';
 import type { PrinterStatusResponse } from '../types';
 
 function wait(ms: number) {
-  return new Promise((resolve) => {
+  return new Promise<void>((resolve) => {
     setTimeout(resolve, ms);
   });
+}
+
+function normalizeInterval(interval: number): number {
+  if (!Number.isFinite(interval)) {
+    return 5000;
+  }
+
+  return Math.max(0, Math.floor(interval));
 }
 
 export function monitorPrinter(
   printer: Printer,
   listener: (status: PrinterStatusResponse) => void,
   interval: number = 5000
-) {
+): () => void {
   let isMonitoring = true;
+  const intervalMs = normalizeInterval(interval);
 
-  async function performMonitor() {
-    await printer.addQueueTask(async () => {
+  async function performMonitor(): Promise<void> {
+    while (isMonitoring) {
       try {
-        await printer.connect();
-      } catch (error) {}
-      const status = await printer.getStatus();
-      listener(status);
-      await printer.disconnect();
+        try {
+          await printer.connect();
+        } catch {
+          // Best effort connect before status polling.
+        }
 
-      return status;
-    });
+        try {
+          const status = await printer.getStatus();
+          try {
+            listener(status);
+          } catch {
+            // Listener failures should not stop monitoring.
+          }
+        } finally {
+          try {
+            await printer.disconnect();
+          } catch {
+            // Best effort disconnect.
+          }
+        }
+      } catch {
+        // Keep monitor loop running on transient errors.
+      }
 
-    await wait(interval);
+      if (!isMonitoring) {
+        break;
+      }
 
-    if (isMonitoring) {
-      await performMonitor();
+      await wait(intervalMs);
     }
   }
 
-  performMonitor();
+  void performMonitor();
 
   return () => {
     isMonitoring = false;

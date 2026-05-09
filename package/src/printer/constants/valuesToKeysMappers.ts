@@ -23,7 +23,7 @@ export const PrinterErrorCodeStatusMapping = remapConstants(
 
 export const PrinterStatusMapping: Record<
   PrinterStatusProperties,
-  Record<string, string>
+  Record<string, string | undefined>
 > = {
   connection: {
     [CommonParams.TRUE]: CommonParams[CommonParams.TRUE],
@@ -174,6 +174,4 @@ export const PrinterStatusMapping: Record<
   },
 };
 
-export type PrinterErrorCodesMapping =
-  | typeof PrinterErrorStatusMapping
-  | typeof PrinterErrorCodeStatusMapping;
+export type PrinterErrorCodesMapping = Record<string, string | undefined>;

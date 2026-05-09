@@ -153,5 +153,5 @@ Controls pairing connection with a Bluetooth device. If macAddress is not provid
 #### Example
 
 ```typescript
-PrintersDiscovery.pairBluetoothDevice().the;
+PrintersDiscovery.pairBluetoothDevice();
 ```

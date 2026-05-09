@@ -20,7 +20,7 @@ Listener function that will be called with printer status.
 
 - `number`
 
-Interval in milliseconds. Default: 1000.
+Interval in milliseconds. Default: 5000.
 
 ### Returns
 

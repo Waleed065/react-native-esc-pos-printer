@@ -10,10 +10,14 @@ import type {
 export function parsePrinterStatus(
   response: PrinterStatusRawResponse
 ): PrinterStatusResponse {
-  return Object.keys(response).reduce((acc, propName) => {
+  const properties = Object.keys(response) as Array<keyof PrinterStatusRawResponse>;
+
+  return properties.reduce((acc, propName) => {
     const statusCode = response[propName];
-    const message = GetPrinterStatusMessageMapping[propName][statusCode];
-    const status = PrinterStatusMapping[propName][statusCode];
+    const message =
+      GetPrinterStatusMessageMapping[propName][statusCode] ??
+      'Status is unknown.';
+    const status = PrinterStatusMapping[propName][statusCode] ?? 'UNKNOWN';
     acc[propName] = { status, message, statusCode: Number(statusCode) };
     return acc;
   }, {} as PrinterStatusResponse);

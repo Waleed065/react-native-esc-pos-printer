@@ -4,16 +4,26 @@ import type { Printer } from '../Printer';
 import type { AddViewShotParams } from '../types';
 import { PrinterConstants, FULL_IMAGE_WIDTH_RATIO } from '../constants';
 
+type CaptureRef = (
+  viewNode: AddViewShotParams['viewNode'],
+  options: { result: 'base64' }
+) => Promise<string>;
+
 export async function addViewShot(
   printer: Printer,
   { width, viewNode }: AddViewShotParams
-) {
-  let captureRef = null;
-  try {
-    const RNViewShot = require('react-native-view-shot');
+): Promise<void> {
+  let captureRef: CaptureRef | null = null;
 
-    captureRef = RNViewShot.captureRef;
-  } catch (error) {}
+  try {
+    const RNViewShot = require('react-native-view-shot') as {
+      captureRef?: CaptureRef;
+    };
+
+    captureRef = RNViewShot.captureRef ?? null;
+  } catch {
+    // Optional dependency.
+  }
 
   if (!captureRef) {
     console.error('Install react-native-view-shot to use addViewShot');
@@ -21,22 +31,27 @@ export async function addViewShot(
     return;
   }
 
-  const { value: paperWidth } = await printer.getPrinterSetting(
+  if (!viewNode) {
+    throw new Error('addViewShot requires a non-null viewNode reference.');
+  }
+
+  const printerSettings = await printer.getPrinterSetting(
     PrinterConstants.PRINTER_SETTING_PAPERWIDTH
   );
+  const paperWidth = printerSettings.value;
 
-  const imageBaset64Uri = await captureRef(viewNode, {
+  const imageBase64Uri = await captureRef(viewNode, {
     result: 'base64',
   });
 
   await printer.addImage({
     source: {
-      uri: 'data:image/png;base64,' + imageBaset64Uri,
+      uri: 'data:image/png;base64,' + imageBase64Uri,
     },
     color: PrinterConstants.COLOR_4,
     mode: PrinterConstants.MODE_GRAY16,
     halftone: PrinterConstants.HALFTONE_THRESHOLD,
     brightness: Platform.OS === 'ios' ? 0.3 : 0.1,
-    width: width || FULL_IMAGE_WIDTH_RATIO * paperWidth,
+    width: width ?? FULL_IMAGE_WIDTH_RATIO * paperWidth,
   });
 }

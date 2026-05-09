@@ -1,6 +1,10 @@
 import { Text } from 'react-native';
 import { styles } from './styles';
 
-export const ScreenTitle = ({ title }) => {
+interface ScreenTitleProps {
+  title: string;
+}
+
+export const ScreenTitle = ({ title }: ScreenTitleProps) => {
   return <Text style={styles.text}>{title}</Text>;
 };

@@ -24,9 +24,11 @@ def isNewArchitectureEnabled() {
 
 apply plugin: "com.android.library"
 
-if (isNewArchitectureEnabled()) {
-  apply plugin: "com.facebook.react"
+if (!isNewArchitectureEnabled()) {
+  throw new GradleException("react-native-esc-pos-printer Android requires newArchEnabled=true")
 }
+
+apply plugin: "com.facebook.react"
 
 
 def getExtOrIntegerDefault(name) {
@@ -41,7 +43,6 @@ android {
   defaultConfig {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
-    buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
   }
 
   buildTypes {
@@ -61,14 +62,10 @@ android {
 
   sourceSets {
     main {
-      if (isNewArchitectureEnabled()) {
-          java.srcDirs += [
-            "generated/java",
-            "generated/jni"
-          ]
-      } else {
-              java.srcDirs += ['src/oldarch']
-      }
+      java.srcDirs += [
+        "generated/java",
+        "generated/jni"
+      ]
     }
   }
 }
@@ -84,10 +81,8 @@ dependencies {
   implementation fileTree(dir: "libs", include: ["*.jar"])
   implementation 'com.google.android.gms:play-services-location:21.0.1'
 }
-if (isNewArchitectureEnabled()) {
-  react {
-    jsRootDir = file("../src/")
-    libraryName = "RNEscPosPrinterSpec"
-    codegenJavaPackageName = "com.escposprinter"
-  }
+react {
+  jsRootDir = file("../src/")
+  libraryName = "RNEscPosPrinterSpec"
+  codegenJavaPackageName = "com.escposprinter"
 }

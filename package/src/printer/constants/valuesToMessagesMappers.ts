@@ -273,5 +273,4 @@ export type PrinterErrorMessageMapping =
   | typeof DisconnectPrinterErrorMessageMapping
   | typeof CommonOperationErrorMessageMapping
   | typeof SendDataPrinterErrorMessageMapping
-  | typeof PrintErrorCodeMessageMapping
-  | typeof GetPrinterSettingsPaperWidthValuesMapping;
+  | typeof PrintErrorCodeMessageMapping;

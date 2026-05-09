@@ -91,7 +91,7 @@
 - (int) connect:(long)timeout {
     @synchronized (self) {
         if (epos2Printer_ == nil) {
-            return false;
+            return EPOS2_ERR_MEMORY;
         }
 
         int connectResult = EPOS2_SUCCESS;

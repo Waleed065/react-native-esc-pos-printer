@@ -1,4 +1,3 @@
-import type { View } from 'react-native';
 import type {
   PrinterModelLang,
   ColorType,
@@ -145,7 +144,7 @@ export interface SpaceBetweenParams {
 }
 
 export interface AddViewShotParams {
-  viewNode: View;
+  viewNode: object | null;
   width?: number;
 }
 

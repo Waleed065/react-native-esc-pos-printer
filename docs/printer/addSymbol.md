@@ -1,4 +1,4 @@
-## addSumbol
+## addSymbol
 
 Adds a 2D symbol print command to the command buffer.
 

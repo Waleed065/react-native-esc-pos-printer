@@ -12,7 +12,7 @@ import type {
 export function parsePrinterSettings(
   response: PrinterSettingsRawResponse
 ): PrinterSettingsResponse {
-  let valueMapping = GetPrinterSettingsPaperWidthValuesMapping;
+  let valueMapping: Record<number, number> = GetPrinterSettingsPaperWidthValuesMapping;
 
   if (response.type === PrinterGetSettingsType.PRINTER_SETTING_PRINTDENSITY) {
     valueMapping = GetPrinterSettingsPrintDencityValuesMapping;
@@ -24,7 +24,7 @@ export function parsePrinterSettings(
 
   return {
     typeCode: response.type,
-    type: PrinterGetSettingsType[response.type],
-    value: valueMapping[response.value],
+    type: PrinterGetSettingsType[response.type] ?? String(response.type),
+    value: valueMapping[response.value] ?? response.value,
   };
 }

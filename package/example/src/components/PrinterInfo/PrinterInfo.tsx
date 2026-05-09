@@ -8,9 +8,9 @@ interface PrinterInfoProps {
 
 export const PrinterInfo = ({ printer }: PrinterInfoProps) => {
   const renderPrinterInfo = () => {
-    return Object.keys(printer).map((key) => {
+    return (Object.keys(printer) as Array<keyof DeviceInfo>).map((key) => {
       return (
-        <Text key={key} style={styles.text}>
+        <Text key={String(key)} style={styles.text}>
           <Text style={[styles.text, styles.bold]}>{key}</Text>: {printer[key]}
         </Text>
       );

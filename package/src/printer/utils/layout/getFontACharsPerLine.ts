@@ -1,4 +1,4 @@
-export function getFontACharsPerLine(deviceName: string) {
+export function getFontACharsPerLine(deviceName: string): Record<number, number> {
   if (deviceName.startsWith('TM-m10'))
     return {
       58: 35,
