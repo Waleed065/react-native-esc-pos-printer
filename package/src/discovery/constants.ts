@@ -15,7 +15,9 @@ export enum DiscoveryDeviceType {
   TYPE_KEYBOARD = DiscoveryModuleConstants.TYPE_KEYBOARD,
   TYPE_SCANNER = DiscoveryModuleConstants.TYPE_SCANNER,
   TYPE_SERIAL = DiscoveryModuleConstants.TYPE_SERIAL,
+  TYPE_CCHANGER = DiscoveryModuleConstants.TYPE_CCHANGER,
   TYPE_POS_KEYBOARD = DiscoveryModuleConstants.TYPE_POS_KEYBOARD,
+  TYPE_CAT = DiscoveryModuleConstants.TYPE_CAT,
   TYPE_MSR = DiscoveryModuleConstants.TYPE_MSR,
   TYPE_GFE = DiscoveryModuleConstants.TYPE_GFE,
   TYPE_OTHER_PERIPHERAL = DiscoveryModuleConstants.TYPE_OTHER_PERIPHERAL,
@@ -46,6 +48,8 @@ export enum DiscoveryBooleanParams { // Android only
 export enum PrinterPairBluetoothError {
   BT_ERR_PARAM = DiscoveryModuleConstants.BT_ERR_PARAM,
   BT_ERR_UNSUPPORTED = DiscoveryModuleConstants.BT_ERR_UNSUPPORTED,
+  BT_ERR_ALREADY_CONNECT = DiscoveryModuleConstants.BT_ERR_ALREADY_CONNECT,
+  BT_ERR_FAILURE = DiscoveryModuleConstants.BT_ERR_FAILURE,
   BT_ERR_CANCEL = DiscoveryModuleConstants.BT_ERR_CANCEL,
   BT_ERR_ILLEGAL_DEVICE = DiscoveryModuleConstants.BT_ERR_ILLEGAL_DEVICE,
   ERR_FAILURE = DiscoveryModuleConstants.ERR_FAILURE,
@@ -88,6 +92,10 @@ export const PrinterPairBluetoothErrorMessageMapping = {
   [PrinterPairBluetoothError.BT_ERR_PARAM]: 'An invalid parameter was passed.',
   [PrinterPairBluetoothError.BT_ERR_UNSUPPORTED]:
     'The function was executed on an unsupported OS.',
+  [PrinterPairBluetoothError.BT_ERR_ALREADY_CONNECT]:
+    'The selected device is already connected or paired.',
+  [PrinterPairBluetoothError.BT_ERR_FAILURE]:
+    'Bluetooth pairing failed due to an unknown Bluetooth error.',
   [PrinterPairBluetoothError.BT_ERR_ILLEGAL_DEVICE]:
     'An invalid device was selected.',
   [DiscoveryErrorResult.ERR_FAILURE]: 'An unknown error occurred.',

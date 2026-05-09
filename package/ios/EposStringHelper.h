@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "ePOS2.h"
+#import <libepos2/ePOS2.h>
 
 @interface EposStringHelper : NSObject
 

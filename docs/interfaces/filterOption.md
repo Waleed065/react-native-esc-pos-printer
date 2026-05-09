@@ -51,7 +51,7 @@ Search can be performed for printers connected via Bluetooth or USB.
 
 ### deviceType
 
-- `Optional` **deviceType**: `DiscoveryFilterOption.TYPE_ALL | DiscoveryFilterOption.TYPE_PRINTER | DiscoveryFilterOption.TYPE_HYBRID_PRINTER | DiscoveryFilterOption.TYPE_DISPLAY | DiscoveryFilterOption.TYPE_KEYBOARD | DiscoveryFilterOption.TYPE_SCANNER | DiscoveryFilterOption.TYPE_SERIAL | DiscoveryFilterOption.TYPE_POS_KEYBOARD | DiscoveryFilterOption.TYPE_MSR | DiscoveryFilterOption.TYPE_GFE | DiscoveryFilterOption.TYPE_OTHER_PERIPHERAL`
+- `Optional` **deviceType**: `DiscoveryFilterOption.TYPE_ALL | DiscoveryFilterOption.TYPE_PRINTER | DiscoveryFilterOption.TYPE_HYBRID_PRINTER | DiscoveryFilterOption.TYPE_DISPLAY | DiscoveryFilterOption.TYPE_KEYBOARD | DiscoveryFilterOption.TYPE_SCANNER | DiscoveryFilterOption.TYPE_SERIAL | DiscoveryFilterOption.TYPE_CCHANGER | DiscoveryFilterOption.TYPE_POS_KEYBOARD | DiscoveryFilterOption.TYPE_CAT | DiscoveryFilterOption.TYPE_MSR | DiscoveryFilterOption.TYPE_GFE | DiscoveryFilterOption.TYPE_OTHER_PERIPHERAL`
 
 Specifies the device type to search for.
 
@@ -71,7 +71,9 @@ The device type settings other than "TYPE\_ALL" can be used for the following sy
 |TYPE\_KEYBOARD|Search for keyboards.|
 |TYPE\_SCANNER|Search for barcode scanners.|
 |TYPE\_SERIAL|Search for serial communication devices.|
+|TYPE\_CCHANGER|Search for coin changer devices.|
 |TYPE\_POS\_KEYBOARD|Search for the POS keyboard.|
+|TYPE\_CAT|Search for CAT (card authorization terminal) devices.|
 |TYPE\_MSR|Search for the MSR.|
 |TYPE\_GFE|Search for the German fiscal element (TSE).|
 |TYPE\_OTHER\_PERIPHERAL|Search for other peripheral devices.|

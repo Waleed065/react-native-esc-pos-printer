@@ -15,14 +15,29 @@ import {
 import type {
   AddBarcodeParams,
   AddCutTypeParam,
+  AddFeedPositionParam,
+  AddFeedUnitParam,
+  AddHLineParams,
+  AddHPositionParam,
   AddImageParams,
+  AddLayoutParams,
+  AddLogoParams,
+  AddPageAreaParams,
+  AddPageDirectionParam,
+  AddPageLineParams,
+  AddPagePositionParams,
+  AddPageRectangleParams,
   AddPulseParams,
+  AddSoundParams,
   AddSymbolParams,
   AddTextAlignParam,
+  AddTextFontParam,
   AddTextLangParam,
+  AddTextRotateParam,
   AddTextSizeParams,
   AddTextSmoothParam,
   AddTextStyleParams,
+  AddVLineBeginParams,
   PrinterInitParams,
   PrinterSettingsRawResponse,
   PrinterSettingsResponse,
@@ -136,6 +151,30 @@ export class PrinterWrapper {
     }
   };
 
+  beginTransaction = async (): Promise<void> => {
+    try {
+      await EscPosPrinter.beginTransaction(this.target);
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'beginTransaction',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
+  endTransaction = async (): Promise<void> => {
+    try {
+      await EscPosPrinter.endTransaction(this.target);
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'endTransaction',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
   addTextLang = async (lang: AddTextLangParam): Promise<void> => {
     try {
       await EscPosPrinter.addTextLang(this.target, lang);
@@ -154,6 +193,58 @@ export class PrinterWrapper {
     } catch (error) {
       throwProcessedError({
         methodName: 'addFeedLine',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
+  addTextRotate = async (
+    rotate: AddTextRotateParam = PrinterConstants.FALSE
+  ): Promise<void> => {
+    try {
+      await EscPosPrinter.addTextRotate(this.target, rotate);
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'addTextRotate',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
+  addTextFont = async (
+    font: AddTextFontParam = PrinterConstants.PARAM_DEFAULT
+  ): Promise<void> => {
+    try {
+      await EscPosPrinter.addTextFont(this.target, font);
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'addTextFont',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
+  addHPosition = async (x: AddHPositionParam): Promise<void> => {
+    try {
+      await EscPosPrinter.addHPosition(this.target, x);
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'addHPosition',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
+  addFeedUnit = async (unit: AddFeedUnitParam): Promise<void> => {
+    try {
+      await EscPosPrinter.addFeedUnit(this.target, unit);
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'addFeedUnit',
         errorCode: getErrorCode(error),
         messagesMapping: CommonOperationErrorMessageMapping,
       });
@@ -306,6 +397,18 @@ export class PrinterWrapper {
     }
   };
 
+  addLogo = async ({ key1, key2 }: AddLogoParams): Promise<void> => {
+    try {
+      await EscPosPrinter.addLogo(this.target, key1, key2);
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'addLogo',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
   addBarcode = async ({
     data,
     type,
@@ -360,6 +463,109 @@ export class PrinterWrapper {
     }
   };
 
+  addPageBegin = async (): Promise<void> => {
+    try {
+      await EscPosPrinter.addPageBegin(this.target);
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'addPageBegin',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
+  addPageEnd = async (): Promise<void> => {
+    try {
+      await EscPosPrinter.addPageEnd(this.target);
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'addPageEnd',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
+  addPageArea = async ({
+    x,
+    y,
+    width,
+    height,
+  }: AddPageAreaParams): Promise<void> => {
+    try {
+      await EscPosPrinter.addPageArea(this.target, x, y, width, height);
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'addPageArea',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
+  addPageDirection = async (
+    direction: AddPageDirectionParam
+  ): Promise<void> => {
+    try {
+      await EscPosPrinter.addPageDirection(this.target, direction);
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'addPageDirection',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
+  addPagePosition = async ({ x, y }: AddPagePositionParams): Promise<void> => {
+    try {
+      await EscPosPrinter.addPagePosition(this.target, x, y);
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'addPagePosition',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
+  addPageLine = async ({
+    x1,
+    y1,
+    x2,
+    y2,
+    style,
+  }: AddPageLineParams): Promise<void> => {
+    try {
+      await EscPosPrinter.addPageLine(this.target, x1, y1, x2, y2, style);
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'addPageLine',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
+  addPageRectangle = async ({
+    x1,
+    y1,
+    x2,
+    y2,
+    style,
+  }: AddPageRectangleParams): Promise<void> => {
+    try {
+      await EscPosPrinter.addPageRectangle(this.target, x1, y1, x2, y2, style);
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'addPageRectangle',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
   addCommand = async (uint8Array: Uint8Array): Promise<void> => {
     try {
       const buffer = new BufferHelper();
@@ -383,6 +589,129 @@ export class PrinterWrapper {
     } catch (error) {
       throwProcessedError({
         methodName: 'addPulse',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
+  addSound = async ({
+    pattern = PrinterConstants.PARAM_DEFAULT,
+    repeat = PrinterConstants.PARAM_DEFAULT,
+    cycle = PrinterConstants.PARAM_DEFAULT,
+  }: AddSoundParams = {}): Promise<void> => {
+    try {
+      await EscPosPrinter.addSound(this.target, pattern, repeat, cycle);
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'addSound',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
+  addFeedPosition = async (
+    position: AddFeedPositionParam = PrinterConstants.PARAM_DEFAULT
+  ): Promise<void> => {
+    try {
+      await EscPosPrinter.addFeedPosition(this.target, position);
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'addFeedPosition',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
+  addHLine = async ({ x1, x2, style }: AddHLineParams): Promise<void> => {
+    try {
+      await EscPosPrinter.addHLine(this.target, x1, x2, style);
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'addHLine',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
+  addVLineBegin = async ({
+    x,
+    style,
+  }: AddVLineBeginParams): Promise<number> => {
+    try {
+      const lineId = await EscPosPrinter.addVLineBegin(this.target, x, style);
+      return lineId;
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'addVLineBegin',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
+  addVLineEnd = async (lineId: number): Promise<void> => {
+    try {
+      await EscPosPrinter.addVLineEnd(this.target, lineId);
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'addVLineEnd',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
+  addLayout = async ({
+    type,
+    width,
+    height,
+    marginTop = PrinterConstants.PARAM_DEFAULT,
+    marginBottom = PrinterConstants.PARAM_DEFAULT,
+    offsetCut = PrinterConstants.PARAM_DEFAULT,
+    offsetLabel = PrinterConstants.PARAM_DEFAULT,
+  }: AddLayoutParams): Promise<void> => {
+    try {
+      await EscPosPrinter.addLayout(
+        this.target,
+        type,
+        width,
+        height,
+        marginTop,
+        marginBottom,
+        offsetCut,
+        offsetLabel
+      );
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'addLayout',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
+  addRotateBegin = async (): Promise<void> => {
+    try {
+      await EscPosPrinter.addRotateBegin(this.target);
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'addRotateBegin',
+        errorCode: getErrorCode(error),
+        messagesMapping: CommonOperationErrorMessageMapping,
+      });
+    }
+  };
+
+  addRotateEnd = async (): Promise<void> => {
+    try {
+      await EscPosPrinter.addRotateEnd(this.target);
+    } catch (error) {
+      throwProcessedError({
+        methodName: 'addRotateEnd',
         errorCode: getErrorCode(error),
         messagesMapping: CommonOperationErrorMessageMapping,
       });

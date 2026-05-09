@@ -11,14 +11,14 @@ Pod::Spec.new do |s|
   s.license      = package["license"]
   s.authors      = package["author"]
 
-  s.platforms    = { :ios => min_ios_version_supported }
+  s.platforms    = { :ios => "15.0" }
   s.source       = { :git => "https://github.com/tr3v3r/react-native-esc-pos-printer.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,mm,cpp}"
   s.private_header_files = "ios/generated/**/*.h"
-  s.vendored_frameworks = "ios/PrinterSDK/libepos2.xcframework"
+  s.vendored_frameworks = "ios/PrinterSDK/libepos2.xcframework", "ios/PrinterSDK/libeposeasyselect.xcframework"
   s.libraries = "xml2.2"
-  s.frameworks = "ExternalAccessory", "CoreBluetooth"
+  s.frameworks = "ExternalAccessory", "CoreBluetooth", "CoreLocation", "CoreNFC"
 
   install_modules_dependencies(s)
 end

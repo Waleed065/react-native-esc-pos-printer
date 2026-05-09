@@ -134,6 +134,36 @@ public class EscPosPrinterModule extends NativeEscPosPrinterSpec {
     }
 
     @ReactMethod
+    synchronized public void beginTransaction(String target, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.beginTransaction();
+          promise.resolve(null);
+        } catch (Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
+    synchronized public void endTransaction(String target, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.endTransaction();
+          promise.resolve(null);
+        } catch (Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
     synchronized public void addText(String target, String data, Promise promise) {
       ThePrinter thePrinter = thePrinterManager_.getObject(target);
       if (thePrinter == null) {
@@ -160,6 +190,66 @@ public class EscPosPrinterModule extends NativeEscPosPrinterSpec {
           } catch(Exception e) {
             processError(promise, e, "");
           }
+      }
+    }
+
+    @ReactMethod
+    synchronized public void addTextRotate(String target, double rotate, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.addTextRotate((int) rotate);
+          promise.resolve(null);
+        } catch (Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
+    synchronized public void addTextFont(String target, double font, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.addTextFont((int) font);
+          promise.resolve(null);
+        } catch (Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
+    synchronized public void addHPosition(String target, double x, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.addHPosition((int) x);
+          promise.resolve(null);
+        } catch (Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
+    synchronized public void addFeedUnit(String target, double unit, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.addFeedUnit((int) unit);
+          promise.resolve(null);
+        } catch (Exception e) {
+          processError(promise, e, "");
+        }
       }
     }
 
@@ -224,6 +314,36 @@ public class EscPosPrinterModule extends NativeEscPosPrinterSpec {
     }
 
     @ReactMethod
+    synchronized public void addRotateBegin(String target, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.addRotateBegin();
+          promise.resolve(null);
+        } catch (Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
+    synchronized public void addRotateEnd(String target, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.addRotateEnd();
+          promise.resolve(null);
+        } catch (Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
     synchronized public void addPulse(String target, double drawer, double time, Promise promise) {
       ThePrinter thePrinter = thePrinterManager_.getObject(target);
       if (thePrinter == null) {
@@ -233,6 +353,36 @@ public class EscPosPrinterModule extends NativeEscPosPrinterSpec {
           thePrinter.addPulse((int) drawer, (int) time);
           promise.resolve(null);
         } catch(Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
+    synchronized public void addSound(String target, double pattern, double repeat, double cycle, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.addSound((int) pattern, (int) repeat, (int) cycle);
+          promise.resolve(null);
+        } catch (Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
+    synchronized public void addFeedPosition(String target, double position, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.addFeedPosition((int) position);
+          promise.resolve(null);
+        } catch (Exception e) {
           processError(promise, e, "");
         }
       }
@@ -316,6 +466,21 @@ public class EscPosPrinterModule extends NativeEscPosPrinterSpec {
     }
 
     @ReactMethod
+    synchronized public void addLogo(String target, double key1, double key2, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.addLogo((int) key1, (int) key2);
+          promise.resolve(null);
+        } catch (Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
     synchronized public void addBarcode(String target, String data, double type, double hri, double font, double width, double height, Promise promise) {
       ThePrinter thePrinter = thePrinterManager_.getObject(target);
       if (thePrinter == null) {
@@ -340,6 +505,189 @@ public class EscPosPrinterModule extends NativeEscPosPrinterSpec {
           thePrinter.addSymbol(data, (int) type, (int) level, (int) width, (int) height, (int) size);
           promise.resolve(null);
         } catch(Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
+    synchronized public void addPageBegin(String target, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.addPageBegin();
+          promise.resolve(null);
+        } catch (Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
+    synchronized public void addPageEnd(String target, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.addPageEnd();
+          promise.resolve(null);
+        } catch (Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
+    synchronized public void addPageArea(String target, double x, double y, double width, double height, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.addPageArea((int) x, (int) y, (int) width, (int) height);
+          promise.resolve(null);
+        } catch (Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
+    synchronized public void addPageDirection(String target, double direction, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.addPageDirection((int) direction);
+          promise.resolve(null);
+        } catch (Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
+    synchronized public void addPagePosition(String target, double x, double y, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.addPagePosition((int) x, (int) y);
+          promise.resolve(null);
+        } catch (Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
+    synchronized public void addPageLine(String target, double x1, double y1, double x2, double y2, double style, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.addPageLine((int) x1, (int) y1, (int) x2, (int) y2, (int) style);
+          promise.resolve(null);
+        } catch (Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
+    synchronized public void addPageRectangle(String target, double x1, double y1, double x2, double y2, double style, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.addPageRectangle((int) x1, (int) y1, (int) x2, (int) y2, (int) style);
+          promise.resolve(null);
+        } catch (Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
+    synchronized public void addHLine(String target, double x1, double x2, double style, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.addHLine((int) x1, (int) x2, (int) style);
+          promise.resolve(null);
+        } catch (Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
+    synchronized public void addVLineBegin(String target, double x, double style, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          int lineId = thePrinter.addVLineBegin((int) x, (int) style);
+          promise.resolve(lineId);
+        } catch (Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
+    synchronized public void addVLineEnd(String target, double lineId, Promise promise) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.addVLineEnd((int) lineId);
+          promise.resolve(null);
+        } catch (Exception e) {
+          processError(promise, e, "");
+        }
+      }
+    }
+
+    @ReactMethod
+    synchronized public void addLayout(
+      String target,
+      double type,
+      double width,
+      double height,
+      double marginTop,
+      double marginBottom,
+      double offsetCut,
+      double offsetLabel,
+      Promise promise
+    ) {
+      ThePrinter thePrinter = thePrinterManager_.getObject(target);
+      if (thePrinter == null) {
+        promise.reject(EposStringHelper.getErrorTextData(ERR_INIT, ""));
+      } else {
+        try {
+          thePrinter.addLayout(
+            (int) type,
+            (int) width,
+            (int) height,
+            (int) marginTop,
+            (int) marginBottom,
+            (int) offsetCut,
+            (int) offsetLabel
+          );
+          promise.resolve(null);
+        } catch (Exception e) {
           processError(promise, e, "");
         }
       }

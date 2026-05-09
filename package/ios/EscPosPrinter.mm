@@ -141,6 +141,48 @@ RCT_EXPORT_METHOD(clearCommandBuffer: (nonnull NSString*) target
     }
 }
 
+RCT_EXPORT_METHOD(beginTransaction: (nonnull NSString*) target
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter beginTransaction];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(endTransaction: (nonnull NSString*) target
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter endTransaction];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
 RCT_EXPORT_METHOD(addText: (nonnull NSString*) target
                   data: (NSString*) data
                   resolve:(RCTPromiseResolveBlock)resolve
@@ -175,6 +217,94 @@ RCT_EXPORT_METHOD(addTextLang: (nonnull NSString*) target
             result = [EposStringHelper getInitErrorResultCode];
         } else {
             result = [thePrinter addTextLang:lang];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(addTextRotate: (nonnull NSString*) target
+                  rotate: (double) rotate
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter addTextRotate:rotate];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(addTextFont: (nonnull NSString*) target
+                  font: (double) font
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter addTextFont:font];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(addHPosition: (nonnull NSString*) target
+                  x: (double) x
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter addHPosition:x];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(addFeedUnit: (nonnull NSString*) target
+                  unit: (double) unit
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter addFeedUnit:unit];
         }
 
         if(result == EPOS2_SUCCESS) {
@@ -273,6 +403,48 @@ RCT_EXPORT_METHOD(addCommand: (nonnull NSString*) target
     }
 }
 
+RCT_EXPORT_METHOD(addRotateBegin: (nonnull NSString*) target
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter addRotateBegin];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(addRotateEnd: (nonnull NSString*) target
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter addRotateEnd];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
 RCT_EXPORT_METHOD(addPulse: (nonnull NSString*) target
                   drawer: (double)drawer
                   time: (double)time
@@ -286,6 +458,52 @@ RCT_EXPORT_METHOD(addPulse: (nonnull NSString*) target
             result = [EposStringHelper getInitErrorResultCode];
         } else {
             result = [thePrinter addPulse:drawer time:time];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(addSound: (nonnull NSString*) target
+                  pattern: (double)pattern
+                  repeat: (double)repeat
+                  cycle: (double)cycle
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter addSound:pattern repeat:repeat cycle:cycle];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(addFeedPosition: (nonnull NSString*) target
+                  position: (double)position
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter addFeedPosition:position];
         }
 
         if(result == EPOS2_SUCCESS) {
@@ -440,6 +658,29 @@ RCT_EXPORT_METHOD(addImage: (nonnull NSString*) target
     }
 }
 
+RCT_EXPORT_METHOD(addLogo: (nonnull NSString*) target
+                  key1:(double)key1
+                  key2:(double)key2
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter addLogo:key1 key2:key2];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
 
 RCT_EXPORT_METHOD(addBarcode: (nonnull NSString*) target
                   data:(NSString *)data
@@ -485,6 +726,268 @@ RCT_EXPORT_METHOD(addSymbol: (nonnull NSString*) target
             result = [EposStringHelper getInitErrorResultCode];
         } else {
             result = [thePrinter addSymbol: data type:type level:level width:width height:height size:size];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(addPageBegin: (nonnull NSString*) target
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter addPageBegin];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(addPageEnd: (nonnull NSString*) target
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter addPageEnd];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(addPageArea: (nonnull NSString*) target
+                  x:(double)x
+                  y:(double)y
+                  width:(double)width
+                  height:(double)height
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter addPageArea:x y:y width:width height:height];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(addPageDirection: (nonnull NSString*) target
+                  direction:(double)direction
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter addPageDirection:direction];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(addPagePosition: (nonnull NSString*) target
+                  x:(double)x
+                  y:(double)y
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter addPagePosition:x y:y];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(addPageLine: (nonnull NSString*) target
+                  x1:(double)x1
+                  y1:(double)y1
+                  x2:(double)x2
+                  y2:(double)y2
+                  style:(double)style
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter addPageLine:x1 y1:y1 x2:x2 y2:y2 style:style];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(addPageRectangle: (nonnull NSString*) target
+                  x1:(double)x1
+                  y1:(double)y1
+                  x2:(double)x2
+                  y2:(double)y2
+                  style:(double)style
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter addPageRectangle:x1 y1:y1 x2:x2 y2:y2 style:style];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(addHLine: (nonnull NSString*) target
+                  x1:(double)x1
+                  x2:(double)x2
+                  style:(double)style
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter addHLine:x1 x2:x2 style:style];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(addVLineBegin: (nonnull NSString*) target
+                  x:(double)x
+                  style:(double)style
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    int lineId = 0;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter addVLineBegin:x style:style lineId:&lineId];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(@(lineId));
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(addVLineEnd: (nonnull NSString*) target
+                  lineId:(double)lineId
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter addVLineEnd:lineId];
+        }
+
+        if(result == EPOS2_SUCCESS) {
+            resolve(nil);
+        } else {
+            reject(@"event_failure", [@(result) stringValue], nil);
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(addLayout: (nonnull NSString*) target
+                  type:(double)type
+                  width:(double)width
+                  height:(double)height
+                  marginTop:(double)marginTop
+                  marginBottom:(double)marginBottom
+                  offsetCut:(double)offsetCut
+                  offsetLabel:(double)offsetLabel
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    int result = EPOS2_SUCCESS;
+    @synchronized (self) {
+        ThePrinter* thePrinter = [objManager_ getObject:target];
+        if (thePrinter == nil) {
+            result = [EposStringHelper getInitErrorResultCode];
+        } else {
+            result = [thePrinter addLayout:type width:width height:height marginTop:marginTop marginBottom:marginBottom offsetCut:offsetCut offsetLabel:offsetLabel];
         }
 
         if(result == EPOS2_SUCCESS) {

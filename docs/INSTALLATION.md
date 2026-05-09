@@ -49,9 +49,29 @@ See explanation of permissions [here](./androidPermissions.md)
 
 ### iOS
 
+Minimum deployment target is **iOS 15.0**.
+
+This fork uses Epson SDK 2.36 dynamic framework packaging (`libepos2.xcframework`) and `libeposeasyselect.xcframework`.
+Running `pod install` will wire these vendored frameworks from `package/ios/PrinterSDK`.
+
 ```sh
 pod install
 ```
+
+### iOS EasySelect permissions
+
+If you use EasySelect runtime scanners, add the following:
+
+- `parseNFC`: add `NFCReaderUsageDescription` and enable the **Near Field Communication Tag Reading** capability.
+- `parseBeacon`: add `NSLocationWhenInUseUsageDescription`.
+
+Optional (only if your app needs background location flows):
+
+- `NSLocationAlwaysAndWhenInUseUsageDescription`
+
+Platform parity note:
+
+- `parseBeacon` is iOS-only in this fork. Android currently returns unsupported.
 
 
 #### Set the item in the Information Property List.
@@ -112,6 +132,8 @@ See explanation of permissions [here](./androidPermissions.md)
   "ios": {
     "infoPlist": {
       "NSBluetoothAlwaysUsageDescription": "Use this to communicate with the printer.",
+      "NFCReaderUsageDescription": "Use this to read Epson EasySelect NFC tags.",
+      "NSLocationWhenInUseUsageDescription": "Use this to scan nearby Epson beacons.",
       "UISupportedExternalAccessoryProtocols": ["com.epson.escpos"]
     }
   }

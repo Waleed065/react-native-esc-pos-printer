@@ -61,7 +61,9 @@ public static Map<String, Object> getDiscoveryConstants() {
       constants.put("TYPE_KEYBOARD", Discovery.TYPE_KEYBOARD);
       constants.put("TYPE_SCANNER", Discovery.TYPE_SCANNER);
       constants.put("TYPE_SERIAL", Discovery.TYPE_SERIAL);
+    constants.put("TYPE_CCHANGER", Discovery.TYPE_CCHANGER);
       constants.put("TYPE_POS_KEYBOARD", Discovery.TYPE_POS_KEYBOARD);
+    constants.put("TYPE_CAT", Discovery.TYPE_CAT);
       constants.put("TYPE_MSR", Discovery.TYPE_MSR);
       constants.put("TYPE_GFE", Discovery.TYPE_GFE);
       constants.put("TYPE_OTHER_PERIPHERAL", Discovery.TYPE_OTHER_PERIPHERAL);
@@ -73,6 +75,8 @@ public static Map<String, Object> getDiscoveryConstants() {
       constants.put("PORTTYPE_BLUETOOTH_LE", CONSTANT_NOT_SUPPORTED_FOR_PLATFORM);
       constants.put("BT_ERR_PARAM", CONSTANT_NOT_SUPPORTED_FOR_PLATFORM);
       constants.put("BT_ERR_UNSUPPORTED", CONSTANT_NOT_SUPPORTED_FOR_PLATFORM);
+      constants.put("BT_ERR_ALREADY_CONNECT", CONSTANT_NOT_SUPPORTED_FOR_PLATFORM);
+      constants.put("BT_ERR_FAILURE", CONSTANT_NOT_SUPPORTED_FOR_PLATFORM);
       constants.put("BT_ERR_CANCEL", CONSTANT_NOT_SUPPORTED_FOR_PLATFORM);
       constants.put("BT_ERR_ILLEGAL_DEVICE", CONSTANT_NOT_SUPPORTED_FOR_PLATFORM);
       // return values
@@ -322,6 +326,52 @@ public static Map<String, Object> getPrinterConstants() {
       constants.put("PULSE_400", Printer.PULSE_400);
       constants.put("PULSE_500", Printer.PULSE_500);
 
+      // line styles
+      constants.put("LINE_THIN", Printer.LINE_THIN);
+      constants.put("LINE_MEDIUM", Printer.LINE_MEDIUM);
+      constants.put("LINE_THICK", Printer.LINE_THICK);
+      constants.put("LINE_THIN_DOUBLE", Printer.LINE_THIN_DOUBLE);
+      constants.put("LINE_MEDIUM_DOUBLE", Printer.LINE_MEDIUM_DOUBLE);
+      constants.put("LINE_THICK_DOUBLE", Printer.LINE_THICK_DOUBLE);
+
+      // directions
+      constants.put("DIRECTION_LEFT_TO_RIGHT", Printer.DIRECTION_LEFT_TO_RIGHT);
+      constants.put("DIRECTION_BOTTOM_TO_TOP", Printer.DIRECTION_BOTTOM_TO_TOP);
+      constants.put("DIRECTION_RIGHT_TO_LEFT", Printer.DIRECTION_RIGHT_TO_LEFT);
+      constants.put("DIRECTION_TOP_TO_BOTTOM", Printer.DIRECTION_TOP_TO_BOTTOM);
+
+      // sound patterns
+      constants.put("PATTERN_NONE", Printer.PATTERN_NONE);
+      constants.put("PATTERN_A", Printer.PATTERN_A);
+      constants.put("PATTERN_B", Printer.PATTERN_B);
+      constants.put("PATTERN_C", Printer.PATTERN_C);
+      constants.put("PATTERN_D", Printer.PATTERN_D);
+      constants.put("PATTERN_E", Printer.PATTERN_E);
+      constants.put("PATTERN_ERROR", Printer.PATTERN_ERROR);
+      constants.put("PATTERN_PAPER_EMPTY", Printer.PATTERN_PAPER_EMPTY);
+      constants.put("PATTERN_1", Printer.PATTERN_1);
+      constants.put("PATTERN_2", Printer.PATTERN_2);
+      constants.put("PATTERN_3", Printer.PATTERN_3);
+      constants.put("PATTERN_4", Printer.PATTERN_4);
+      constants.put("PATTERN_5", Printer.PATTERN_5);
+      constants.put("PATTERN_6", Printer.PATTERN_6);
+      constants.put("PATTERN_7", Printer.PATTERN_7);
+      constants.put("PATTERN_8", Printer.PATTERN_8);
+      constants.put("PATTERN_9", Printer.PATTERN_9);
+      constants.put("PATTERN_10", Printer.PATTERN_10);
+
+      // feed positions
+      constants.put("FEED_PEELING", Printer.FEED_PEELING);
+      constants.put("FEED_CUTTING", Printer.FEED_CUTTING);
+      constants.put("FEED_CURRENT_TOF", Printer.FEED_CURRENT_TOF);
+      constants.put("FEED_NEXT_TOF", Printer.FEED_NEXT_TOF);
+
+      // layouts
+      constants.put("LAYOUT_RECEIPT", Printer.LAYOUT_RECEIPT);
+      constants.put("LAYOUT_RECEIPT_BM", Printer.LAYOUT_RECEIPT_BM);
+      constants.put("LAYOUT_LABEL", Printer.LAYOUT_LABEL);
+      constants.put("LAYOUT_LABEL_BM", Printer.LAYOUT_LABEL_BM);
+
       // text align
 
       constants.put("ALIGN_LEFT", Printer.ALIGN_LEFT);
@@ -352,6 +402,7 @@ public static int getPrinterSeries(final String deviceName) {
         if (deviceName.startsWith("TM-m30II")) return Printer.TM_M30II;
         if (deviceName.startsWith("TM-m50II")) return Printer.TM_M50II;
         if (deviceName.startsWith("TM-m50")) return Printer.TM_M50;
+        if (deviceName.startsWith("TM-m55")) return Printer.TM_M55;
         if (deviceName.startsWith("TM-P20II")) return Printer.TM_P20II;
         if (deviceName.startsWith("TM-P20")) return Printer.TM_P20;
         if (deviceName.startsWith("TM-P60II")) return Printer.TM_P60II;
@@ -369,6 +420,7 @@ public static int getPrinterSeries(final String deviceName) {
         if (deviceName.startsWith("TM-T88")) return Printer.TM_T88;
         if (deviceName.startsWith("TM-T90")) return Printer.TM_T90;
         if (deviceName.startsWith("TM-T100")) return Printer.TM_T100;
+        if (deviceName.startsWith("TM-U220II")) return Printer.TM_U220II;
         if (deviceName.startsWith("TM-U220")) return Printer.TM_U220;
         if (deviceName.startsWith("TM-U330")) return Printer.TM_U330;
         if (deviceName.startsWith("TM-L90LFC")) return Printer.TM_L90LFC;

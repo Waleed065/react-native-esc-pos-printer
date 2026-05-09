@@ -1,6 +1,6 @@
 #ifndef ThePrinter_h
 #define ThePrinter_h
-#import "ePOS2.h"
+#import <libepos2/ePOS2.h>
 
 
 /**
@@ -60,6 +60,14 @@
 
 -(int) addTextLang:(int)lang;
 
+-(int) addTextRotate:(int)rotate;
+
+-(int) addTextFont:(int)font;
+
+-(int) addHPosition:(long)x;
+
+-(int) addFeedUnit:(long)unit;
+
 -(int) addFeedLine: (int)line;
 
 -(int) addLineSpace: (int)linespc;
@@ -89,6 +97,38 @@
 -(int) addBarcode: (nonnull NSString *)data type:(int)type hri:(int)hri font:(int)font width:(long)width height:(long)height;
 
 -(int) addSymbol:(nonnull NSString *)data type:(int)type level:(int)level width:(long)width height:(long)height size:(long)size;
+
+-(int) addLogo:(long)key1 key2:(long)key2;
+
+-(int) addPageBegin;
+
+-(int) addPageEnd;
+
+-(int) addPageArea:(long)x y:(long)y width:(long)width height:(long)height;
+
+-(int) addPageDirection:(int)direction;
+
+-(int) addPagePosition:(long)x y:(long)y;
+
+-(int) addPageLine:(long)x1 y1:(long)y1 x2:(long)x2 y2:(long)y2 style:(int)style;
+
+-(int) addPageRectangle:(long)x1 y1:(long)y1 x2:(long)x2 y2:(long)y2 style:(int)style;
+
+-(int) addSound:(int)pattern repeat:(long)repeat cycle:(long)cycle;
+
+-(int) addFeedPosition:(int)position;
+
+-(int) addHLine:(long)x1 x2:(long)x2 style:(int)style;
+
+-(int) addVLineBegin:(long)x style:(int)style lineId:(int *)lineId;
+
+-(int) addVLineEnd:(int)lineId;
+
+-(int) addLayout:(int)type width:(long)width height:(long)height marginTop:(long)marginTop marginBottom:(long)marginBottom offsetCut:(long)offsetCut offsetLabel:(long)offsetLabel;
+
+-(int) addRotateBegin;
+
+-(int) addRotateEnd;
 
 -(nonnull NSDictionary*) getStatus;
 

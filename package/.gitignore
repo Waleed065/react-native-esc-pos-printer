@@ -83,7 +83,4 @@ ios/generated
 android/generated
 
 
-# printer SDK
-ios/PrinterSDK
-android/libs
-android/src/main/jniLibs
+# Epson SDK artifacts are intentionally vendored in-repo.

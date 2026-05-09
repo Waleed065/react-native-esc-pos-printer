@@ -258,6 +258,54 @@
     }
 }
 
+-(int) addTextRotate:(int)rotate;
+{
+    @synchronized (self) {
+        if (epos2Printer_ == nil) {
+            return EPOS2_ERR_MEMORY;
+        }
+
+        int result = [epos2Printer_ addTextRotate: rotate];
+        return result;
+    }
+}
+
+-(int) addTextFont:(int)font;
+{
+    @synchronized (self) {
+        if (epos2Printer_ == nil) {
+            return EPOS2_ERR_MEMORY;
+        }
+
+        int result = [epos2Printer_ addTextFont: font];
+        return result;
+    }
+}
+
+-(int) addHPosition:(long)x;
+{
+    @synchronized (self) {
+        if (epos2Printer_ == nil) {
+            return EPOS2_ERR_MEMORY;
+        }
+
+        int result = [epos2Printer_ addHPosition: x];
+        return result;
+    }
+}
+
+-(int) addFeedUnit:(long)unit;
+{
+    @synchronized (self) {
+        if (epos2Printer_ == nil) {
+            return EPOS2_ERR_MEMORY;
+        }
+
+        int result = [epos2Printer_ addFeedUnit: unit];
+        return result;
+    }
+}
+
 -(int) addFeedLine: (int)line;
 {
     @synchronized (self) {
@@ -420,6 +468,198 @@
         }
 
         int result = [epos2Printer_ addSymbol: data type:type level:level width:width height:height size:size];
+        return result;
+    }
+}
+
+-(int) addLogo:(long)key1 key2:(long)key2;
+{
+    @synchronized (self) {
+        if (epos2Printer_ == nil) {
+            return EPOS2_ERR_MEMORY;
+        }
+
+        int result = [epos2Printer_ addLogo:key1 key2:key2];
+        return result;
+    }
+}
+
+-(int) addPageBegin;
+{
+    @synchronized (self) {
+        if (epos2Printer_ == nil) {
+            return EPOS2_ERR_MEMORY;
+        }
+
+        int result = [epos2Printer_ addPageBegin];
+        return result;
+    }
+}
+
+-(int) addPageEnd;
+{
+    @synchronized (self) {
+        if (epos2Printer_ == nil) {
+            return EPOS2_ERR_MEMORY;
+        }
+
+        int result = [epos2Printer_ addPageEnd];
+        return result;
+    }
+}
+
+-(int) addPageArea:(long)x y:(long)y width:(long)width height:(long)height;
+{
+    @synchronized (self) {
+        if (epos2Printer_ == nil) {
+            return EPOS2_ERR_MEMORY;
+        }
+
+        int result = [epos2Printer_ addPageArea:x y:y width:width height:height];
+        return result;
+    }
+}
+
+-(int) addPageDirection:(int)direction;
+{
+    @synchronized (self) {
+        if (epos2Printer_ == nil) {
+            return EPOS2_ERR_MEMORY;
+        }
+
+        int result = [epos2Printer_ addPageDirection:direction];
+        return result;
+    }
+}
+
+-(int) addPagePosition:(long)x y:(long)y;
+{
+    @synchronized (self) {
+        if (epos2Printer_ == nil) {
+            return EPOS2_ERR_MEMORY;
+        }
+
+        int result = [epos2Printer_ addPagePosition:x y:y];
+        return result;
+    }
+}
+
+-(int) addPageLine:(long)x1 y1:(long)y1 x2:(long)x2 y2:(long)y2 style:(int)style;
+{
+    @synchronized (self) {
+        if (epos2Printer_ == nil) {
+            return EPOS2_ERR_MEMORY;
+        }
+
+        int result = [epos2Printer_ addPageLine:x1 y1:y1 x2:x2 y2:y2 style:style];
+        return result;
+    }
+}
+
+-(int) addPageRectangle:(long)x1 y1:(long)y1 x2:(long)x2 y2:(long)y2 style:(int)style;
+{
+    @synchronized (self) {
+        if (epos2Printer_ == nil) {
+            return EPOS2_ERR_MEMORY;
+        }
+
+        int result = [epos2Printer_ addPageRectangle:x1 y1:y1 x2:x2 y2:y2 style:style];
+        return result;
+    }
+}
+
+-(int) addSound:(int)pattern repeat:(long)repeat cycle:(long)cycle;
+{
+    @synchronized (self) {
+        if (epos2Printer_ == nil) {
+            return EPOS2_ERR_MEMORY;
+        }
+
+        int result = [epos2Printer_ addSound:pattern repeat:repeat cycle:cycle];
+        return result;
+    }
+}
+
+-(int) addFeedPosition:(int)position;
+{
+    @synchronized (self) {
+        if (epos2Printer_ == nil) {
+            return EPOS2_ERR_MEMORY;
+        }
+
+        int result = [epos2Printer_ addFeedPosition:position];
+        return result;
+    }
+}
+
+-(int) addHLine:(long)x1 x2:(long)x2 style:(int)style;
+{
+    @synchronized (self) {
+        if (epos2Printer_ == nil) {
+            return EPOS2_ERR_MEMORY;
+        }
+
+        int result = [epos2Printer_ addHLine:x1 x2:x2 style:style];
+        return result;
+    }
+}
+
+-(int) addVLineBegin:(long)x style:(int)style lineId:(int *)lineId;
+{
+    @synchronized (self) {
+        if (epos2Printer_ == nil) {
+            return EPOS2_ERR_MEMORY;
+        }
+
+        int result = [epos2Printer_ addVLineBegin:x style:style lineId:lineId];
+        return result;
+    }
+}
+
+-(int) addVLineEnd:(int)lineId;
+{
+    @synchronized (self) {
+        if (epos2Printer_ == nil) {
+            return EPOS2_ERR_MEMORY;
+        }
+
+        int result = [epos2Printer_ addVLineEnd:lineId];
+        return result;
+    }
+}
+
+-(int) addLayout:(int)type width:(long)width height:(long)height marginTop:(long)marginTop marginBottom:(long)marginBottom offsetCut:(long)offsetCut offsetLabel:(long)offsetLabel;
+{
+    @synchronized (self) {
+        if (epos2Printer_ == nil) {
+            return EPOS2_ERR_MEMORY;
+        }
+
+        int result = [epos2Printer_ addLayout:type width:width height:height marginTop:marginTop marginBottom:marginBottom offsetCut:offsetCut offsetLabel:offsetLabel];
+        return result;
+    }
+}
+
+-(int) addRotateBegin;
+{
+    @synchronized (self) {
+        if (epos2Printer_ == nil) {
+            return EPOS2_ERR_MEMORY;
+        }
+
+        int result = [epos2Printer_ addRotateBegin];
+        return result;
+    }
+}
+
+-(int) addRotateEnd;
+{
+    @synchronized (self) {
+        if (epos2Printer_ == nil) {
+            return EPOS2_ERR_MEMORY;
+        }
+
+        int result = [epos2Printer_ addRotateEnd];
         return result;
     }
 }

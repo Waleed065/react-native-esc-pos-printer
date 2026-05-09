@@ -17,7 +17,9 @@ export interface Spec extends TurboModule {
     TYPE_KEYBOARD: number;
     TYPE_SCANNER: number;
     TYPE_SERIAL: number;
+    TYPE_CCHANGER: number;
     TYPE_POS_KEYBOARD: number;
+    TYPE_CAT: number;
     TYPE_MSR: number;
     TYPE_GFE: number;
     TYPE_OTHER_PERIPHERAL: number;
@@ -28,6 +30,8 @@ export interface Spec extends TurboModule {
     ERR_PROCESSING: number;
     BT_ERR_PARAM: number;
     BT_ERR_UNSUPPORTED: number;
+    BT_ERR_ALREADY_CONNECT: number;
+    BT_ERR_FAILURE: number;
     BT_ERR_CANCEL: number;
     BT_ERR_ILLEGAL_DEVICE: number;
     FILTER_NONE: number;

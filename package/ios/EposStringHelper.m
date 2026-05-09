@@ -46,7 +46,9 @@ int EPOS2_ERR_INIT = -1;
           @"TYPE_KEYBOARD": @(EPOS2_TYPE_KEYBOARD),
           @"TYPE_SCANNER": @(EPOS2_TYPE_SCANNER),
           @"TYPE_SERIAL": @(EPOS2_TYPE_SERIAL),
+          @"TYPE_CCHANGER": @(EPOS2_TYPE_CCHANGER),
           @"TYPE_POS_KEYBOARD": @(EPOS2_TYPE_POS_KEYBOARD),
+          @"TYPE_CAT": @(EPOS2_TYPE_CAT),
           @"TYPE_MSR": @(EPOS2_TYPE_MSR),
           @"TYPE_GFE": @(EPOS2_TYPE_GFE),
           @"TYPE_OTHER_PERIPHERAL": @(EPOS2_TYPE_OTHER_PERIPHERAL),
@@ -59,6 +61,8 @@ int EPOS2_ERR_INIT = -1;
               // pair bluetooth device error
           @"BT_ERR_PARAM": @(EPOS2_BT_ERR_PARAM),
           @"BT_ERR_UNSUPPORTED": @(EPOS2_BT_ERR_UNSUPPORTED),
+          @"BT_ERR_ALREADY_CONNECT": @(EPOS2_BT_ERR_ALREADY_CONNECT),
+          @"BT_ERR_FAILURE": @(EPOS2_BT_ERR_FAILURE),
           @"BT_ERR_CANCEL": @(EPOS2_BT_ERR_CANCEL),
           @"BT_ERR_ILLEGAL_DEVICE": @(EPOS2_BT_ERR_ILLEGAL_DEVICE),
     };
@@ -302,6 +306,52 @@ int EPOS2_ERR_INIT = -1;
     @"PULSE_400": @(EPOS2_PULSE_400),
     @"PULSE_500": @(EPOS2_PULSE_500),
 
+    // line styles
+    @"LINE_THIN": @(EPOS2_LINE_THIN),
+    @"LINE_MEDIUM": @(EPOS2_LINE_MEDIUM),
+    @"LINE_THICK": @(EPOS2_LINE_THICK),
+    @"LINE_THIN_DOUBLE": @(EPOS2_LINE_THIN_DOUBLE),
+    @"LINE_MEDIUM_DOUBLE": @(EPOS2_LINE_MEDIUM_DOUBLE),
+    @"LINE_THICK_DOUBLE": @(EPOS2_LINE_THICK_DOUBLE),
+
+    // directions
+    @"DIRECTION_LEFT_TO_RIGHT": @(EPOS2_DIRECTION_LEFT_TO_RIGHT),
+    @"DIRECTION_BOTTOM_TO_TOP": @(EPOS2_DIRECTION_BOTTOM_TO_TOP),
+    @"DIRECTION_RIGHT_TO_LEFT": @(EPOS2_DIRECTION_RIGHT_TO_LEFT),
+    @"DIRECTION_TOP_TO_BOTTOM": @(EPOS2_DIRECTION_TOP_TO_BOTTOM),
+
+    // sound patterns
+    @"PATTERN_NONE": @(EPOS2_PATTERN_NONE),
+    @"PATTERN_A": @(EPOS2_PATTERN_A),
+    @"PATTERN_B": @(EPOS2_PATTERN_B),
+    @"PATTERN_C": @(EPOS2_PATTERN_C),
+    @"PATTERN_D": @(EPOS2_PATTERN_D),
+    @"PATTERN_E": @(EPOS2_PATTERN_E),
+    @"PATTERN_ERROR": @(EPOS2_PATTERN_ERROR),
+    @"PATTERN_PAPER_EMPTY": @(EPOS2_PATTERN_PAPER_EMPTY),
+    @"PATTERN_1": @(EPOS2_PATTERN_1),
+    @"PATTERN_2": @(EPOS2_PATTERN_2),
+    @"PATTERN_3": @(EPOS2_PATTERN_3),
+    @"PATTERN_4": @(EPOS2_PATTERN_4),
+    @"PATTERN_5": @(EPOS2_PATTERN_5),
+    @"PATTERN_6": @(EPOS2_PATTERN_6),
+    @"PATTERN_7": @(EPOS2_PATTERN_7),
+    @"PATTERN_8": @(EPOS2_PATTERN_8),
+    @"PATTERN_9": @(EPOS2_PATTERN_9),
+    @"PATTERN_10": @(EPOS2_PATTERN_10),
+
+    // feed positions
+    @"FEED_PEELING": @(EPOS2_FEED_PEELING),
+    @"FEED_CUTTING": @(EPOS2_FEED_CUTTING),
+    @"FEED_CURRENT_TOF": @(EPOS2_FEED_CURRENT_TOF),
+    @"FEED_NEXT_TOF": @(EPOS2_FEED_NEXT_TOF),
+
+    // layouts
+    @"LAYOUT_RECEIPT": @(EPOS2_LAYOUT_RECEIPT),
+    @"LAYOUT_RECEIPT_BM": @(EPOS2_LAYOUT_RECEIPT_BM),
+    @"LAYOUT_LABEL": @(EPOS2_LAYOUT_LABEL),
+    @"LAYOUT_LABEL_BM": @(EPOS2_LAYOUT_LABEL_BM),
+
     // text align
 
     @"ALIGN_LEFT": @(EPOS2_ALIGN_LEFT),
@@ -331,6 +381,7 @@ int EPOS2_ERR_INIT = -1;
     if ([name hasPrefix:@"TM-m30II"]) return EPOS2_TM_M30II;
     if ([name hasPrefix:@"TM-m50II"]) return EPOS2_TM_M50II;
     if ([name hasPrefix:@"TM-m50"]) return EPOS2_TM_M50;
+    if ([name hasPrefix:@"TM-m55"]) return EPOS2_TM_M55;
     if ([name hasPrefix:@"TM-P20II"]) return EPOS2_TM_P20II;
     if ([name hasPrefix:@"TM-P20"]) return EPOS2_TM_P20;
     if ([name hasPrefix:@"TM-P60II"]) return EPOS2_TM_P60II;
@@ -348,6 +399,7 @@ int EPOS2_ERR_INIT = -1;
     if ([name hasPrefix:@"TM-T88"]) return EPOS2_TM_T88;
     if ([name hasPrefix:@"TM-T90"]) return EPOS2_TM_T90;
     if ([name hasPrefix:@"TM-T100"]) return EPOS2_TM_T100;
+    if ([name hasPrefix:@"TM-U220II"]) return EPOS2_TM_U220II;
     if ([name hasPrefix:@"TM-U220"]) return EPOS2_TM_U220;
     if ([name hasPrefix:@"TM-U330"]) return EPOS2_TM_U330;
     if ([name hasPrefix:@"TM-L90LFC"]) return EPOS2_TM_L90LFC;

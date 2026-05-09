@@ -1,4 +1,4 @@
-#import "ePOS2.h"
+#import <libepos2/ePOS2.h>
 #import "ThePrinterManager.h"
 
 #if RCT_NEW_ARCH_ENABLED

@@ -1,7 +1,7 @@
 #import "EscPosPrinterDiscovery.h"
 #import "EposStringHelper.h"
 
-#import "ePOS2.h"
+#import <libepos2/ePOS2.h>
 
 @interface EscPosPrinterDiscovery() <Epos2DiscoveryDelegate>
     @property (strong, nonatomic) NSMutableArray *printerList;
@@ -33,7 +33,7 @@ RCT_EXPORT_MODULE()
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[@"onDiscovery"];
+    return @[@"onDiscovery", @"enableLocationSettingSuccess", @"enableLocationSettingFailure"];
 }
 
 RCT_EXPORT_METHOD(startDiscovery:(NSDictionary *)params
@@ -62,6 +62,29 @@ RCT_EXPORT_METHOD(stopDiscovery:(RCTPromiseResolveBlock)resolve
        resolve(nil);
     } else {
        reject(@"event_failure", [@(result) stringValue], nil);
+    }
+}
+
+RCT_EXPORT_METHOD(enableLocationSetting:(RCTPromiseResolveBlock)resolve
+                 reject:(RCTPromiseRejectBlock)reject)
+{
+    // iOS does not require the Android location-settings flow; expose a parity no-op.
+    @try {
+        #if RCT_NEW_ARCH_ENABLED
+        [self emitEnableLocationSettingSuccess];
+        #else
+        [self sendEventWithName:@"enableLocationSettingSuccess" body:[NSNull null]];
+        #endif
+        resolve(nil);
+    } @catch (NSException *exception) {
+        #if RCT_NEW_ARCH_ENABLED
+        [self emitEnableLocationSettingFailure];
+        #else
+        [self sendEventWithName:@"enableLocationSettingFailure" body:[NSNull null]];
+        #endif
+
+        NSString *reason = exception.reason ?: @"Unknown location setting failure";
+        reject(@"event_failure", reason, nil);
     }
 }
 

@@ -9,14 +9,29 @@ import {
 import type {
   AddBarcodeParams,
   AddCutTypeParam,
+  AddFeedPositionParam,
+  AddFeedUnitParam,
+  AddHLineParams,
+  AddHPositionParam,
   AddImageParams,
+  AddLayoutParams,
+  AddLogoParams,
+  AddPageAreaParams,
+  AddPageDirectionParam,
+  AddPageLineParams,
+  AddPagePositionParams,
+  AddPageRectangleParams,
   AddPulseParams,
+  AddSoundParams,
   AddSymbolParams,
   AddTextAlignParam,
+  AddTextFontParam,
   AddTextLangParam,
+  AddTextRotateParam,
   AddTextSizeParams,
   AddTextSmoothParam,
   AddTextStyleParams,
+  AddVLineBeginParams,
   PrinterParams,
 } from './types';
 
@@ -64,8 +79,32 @@ export class Printer {
     return this.printerWrapper.addText(data);
   };
 
+  beginTransaction = () => {
+    return this.printerWrapper.beginTransaction();
+  };
+
+  endTransaction = () => {
+    return this.printerWrapper.endTransaction();
+  };
+
   addFeedLine = (line?: number) => {
     return this.printerWrapper.addFeedLine(line);
+  };
+
+  addTextRotate = (rotate?: AddTextRotateParam) => {
+    return this.printerWrapper.addTextRotate(rotate);
+  };
+
+  addTextFont = (font?: AddTextFontParam) => {
+    return this.printerWrapper.addTextFont(font);
+  };
+
+  addHPosition = (x: AddHPositionParam) => {
+    return this.printerWrapper.addHPosition(x);
+  };
+
+  addFeedUnit = (unit: AddFeedUnitParam) => {
+    return this.printerWrapper.addFeedUnit(unit);
   };
 
   addLineSpace = (linespc: number) => {
@@ -92,6 +131,10 @@ export class Printer {
     return this.printerWrapper.addImage(params);
   };
 
+  addLogo = (params: AddLogoParams) => {
+    return this.printerWrapper.addLogo(params);
+  };
+
   addBarcode = (params: AddBarcodeParams) => {
     return this.printerWrapper.addBarcode(params);
   };
@@ -100,12 +143,72 @@ export class Printer {
     return this.printerWrapper.addSymbol(params);
   };
 
+  addPageBegin = () => {
+    return this.printerWrapper.addPageBegin();
+  };
+
+  addPageEnd = () => {
+    return this.printerWrapper.addPageEnd();
+  };
+
+  addPageArea = (params: AddPageAreaParams) => {
+    return this.printerWrapper.addPageArea(params);
+  };
+
+  addPageDirection = (direction: AddPageDirectionParam) => {
+    return this.printerWrapper.addPageDirection(direction);
+  };
+
+  addPagePosition = (params: AddPagePositionParams) => {
+    return this.printerWrapper.addPagePosition(params);
+  };
+
+  addPageLine = (params: AddPageLineParams) => {
+    return this.printerWrapper.addPageLine(params);
+  };
+
+  addPageRectangle = (params: AddPageRectangleParams) => {
+    return this.printerWrapper.addPageRectangle(params);
+  };
+
   addCommand = (uint8Array: Uint8Array) => {
     return this.printerWrapper.addCommand(uint8Array);
   };
 
   addPulse = (params: AddPulseParams) => {
     return this.printerWrapper.addPulse(params);
+  };
+
+  addSound = (params?: AddSoundParams) => {
+    return this.printerWrapper.addSound(params);
+  };
+
+  addFeedPosition = (position?: AddFeedPositionParam) => {
+    return this.printerWrapper.addFeedPosition(position);
+  };
+
+  addHLine = (params: AddHLineParams) => {
+    return this.printerWrapper.addHLine(params);
+  };
+
+  addVLineBegin = (params: AddVLineBeginParams) => {
+    return this.printerWrapper.addVLineBegin(params);
+  };
+
+  addVLineEnd = (lineId: number) => {
+    return this.printerWrapper.addVLineEnd(lineId);
+  };
+
+  addLayout = (params: AddLayoutParams) => {
+    return this.printerWrapper.addLayout(params);
+  };
+
+  addRotateBegin = () => {
+    return this.printerWrapper.addRotateBegin();
+  };
+
+  addRotateEnd = () => {
+    return this.printerWrapper.addRotateEnd();
   };
 
   addTextAlign = (params?: AddTextAlignParam) => {

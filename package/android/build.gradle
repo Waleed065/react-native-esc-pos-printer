@@ -79,7 +79,7 @@ repositories {
 dependencies {
   implementation "com.facebook.react:react-android"
   implementation fileTree(dir: "libs", include: ["*.jar"])
-  implementation 'com.google.android.gms:play-services-location:21.0.1'
+  implementation 'com.google.android.gms:play-services-location:21.3.0'
 }
 react {
   jsRootDir = file("../src/")

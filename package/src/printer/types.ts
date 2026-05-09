@@ -10,6 +10,11 @@ import type {
   BarcodeHRI,
   PrinterAddPulseDrawerType,
   PrinterAddPulseTimeType,
+  PrinterDirectionType,
+  PrinterFeedPositionType,
+  PrinterLayoutType,
+  PrinterLineStyleType,
+  PrinterSoundPatternType,
   TextAlignType,
   CommonParams,
   TextLangType,
@@ -127,11 +132,85 @@ export type AddTextSizeParams = {
 
 export type AddTextSmoothParam = TrueFalseParam | CommonParams.PARAM_DEFAULT;
 
+export type AddTextRotateParam = TrueFalseParam | CommonParams.PARAM_DEFAULT;
+
+export type AddTextFontParam = FontType | CommonParams.PARAM_DEFAULT;
+
+export type AddHPositionParam = number;
+
+export type AddFeedUnitParam = number;
+
 export type AddTextStyleParams = {
   reverse?: TrueFalseParam | DefaultOrUnspecifiedParam;
   ul?: TrueFalseParam | DefaultOrUnspecifiedParam;
   em?: TrueFalseParam | DefaultOrUnspecifiedParam;
   color?: ColorType | DefaultOrUnspecifiedParam;
+};
+
+export type AddLogoParams = {
+  key1: number;
+  key2: number;
+};
+
+export type AddPageAreaParams = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+export type AddPageDirectionParam = PrinterDirectionType;
+
+export type AddPagePositionParams = {
+  x: number;
+  y: number;
+};
+
+export type AddPageLineParams = {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  style: PrinterLineStyleType;
+};
+
+export type AddPageRectangleParams = {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  style: PrinterLineStyleType;
+};
+
+export interface AddSoundParams {
+  pattern?: PrinterSoundPatternType | CommonParams.PARAM_DEFAULT;
+  repeat?: number | CommonParams.PARAM_DEFAULT;
+  cycle?: number | CommonParams.PARAM_DEFAULT;
+}
+
+export type AddFeedPositionParam =
+  | PrinterFeedPositionType
+  | CommonParams.PARAM_DEFAULT;
+
+export type AddHLineParams = {
+  x1: number;
+  x2: number;
+  style: PrinterLineStyleType;
+};
+
+export type AddVLineBeginParams = {
+  x: number;
+  style: PrinterLineStyleType;
+};
+
+export type AddLayoutParams = {
+  type: PrinterLayoutType;
+  width: number;
+  height: number;
+  marginTop?: number | CommonParams.PARAM_DEFAULT;
+  marginBottom?: number | CommonParams.PARAM_DEFAULT;
+  offsetCut?: number | CommonParams.PARAM_DEFAULT;
+  offsetLabel?: number | CommonParams.PARAM_DEFAULT;
 };
 
 export interface SpaceBetweenParams {

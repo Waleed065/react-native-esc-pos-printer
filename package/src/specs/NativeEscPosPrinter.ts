@@ -206,6 +206,42 @@ export interface Spec extends TurboModule {
     PULSE_300: number;
     PULSE_400: number;
     PULSE_500: number;
+    LINE_THIN: number;
+    LINE_MEDIUM: number;
+    LINE_THICK: number;
+    LINE_THIN_DOUBLE: number;
+    LINE_MEDIUM_DOUBLE: number;
+    LINE_THICK_DOUBLE: number;
+    DIRECTION_LEFT_TO_RIGHT: number;
+    DIRECTION_BOTTOM_TO_TOP: number;
+    DIRECTION_RIGHT_TO_LEFT: number;
+    DIRECTION_TOP_TO_BOTTOM: number;
+    PATTERN_NONE: number;
+    PATTERN_A: number;
+    PATTERN_B: number;
+    PATTERN_C: number;
+    PATTERN_D: number;
+    PATTERN_E: number;
+    PATTERN_ERROR: number;
+    PATTERN_PAPER_EMPTY: number;
+    PATTERN_1: number;
+    PATTERN_2: number;
+    PATTERN_3: number;
+    PATTERN_4: number;
+    PATTERN_5: number;
+    PATTERN_6: number;
+    PATTERN_7: number;
+    PATTERN_8: number;
+    PATTERN_9: number;
+    PATTERN_10: number;
+    FEED_PEELING: number;
+    FEED_CUTTING: number;
+    FEED_CURRENT_TOF: number;
+    FEED_NEXT_TOF: number;
+    LAYOUT_RECEIPT: number;
+    LAYOUT_RECEIPT_BM: number;
+    LAYOUT_LABEL: number;
+    LAYOUT_LABEL_BM: number;
     ALIGN_LEFT: number;
     ALIGN_CENTER: number;
     ALIGN_RIGHT: number;
@@ -227,8 +263,14 @@ export interface Spec extends TurboModule {
   connect(target: string, timeout: number): Promise<void>;
   disconnect(target: string): Promise<void>;
   clearCommandBuffer(target: string): Promise<void>;
+  beginTransaction(target: string): Promise<void>;
+  endTransaction(target: string): Promise<void>;
   addText(target: string, data: string): Promise<void>;
+  addTextRotate(target: string, rotate: number): Promise<void>;
   addTextLang(target: string, lang: number): Promise<void>;
+  addTextFont(target: string, font: number): Promise<void>;
+  addHPosition(target: string, x: number): Promise<void>;
+  addFeedUnit(target: string, unit: number): Promise<void>;
   addFeedLine(target: string, line: number): Promise<void>;
   addLineSpace(target: string, linespc: number): Promise<void>;
   addCut(target: string, type: number): Promise<void>;
@@ -267,8 +309,63 @@ export interface Spec extends TurboModule {
     height: number,
     size: number
   ): Promise<void>;
+  addLogo(target: string, key1: number, key2: number): Promise<void>;
+  addPageBegin(target: string): Promise<void>;
+  addPageEnd(target: string): Promise<void>;
+  addPageArea(
+    target: string,
+    x: number,
+    y: number,
+    width: number,
+    height: number
+  ): Promise<void>;
+  addPageDirection(target: string, direction: number): Promise<void>;
+  addPagePosition(target: string, x: number, y: number): Promise<void>;
+  addPageLine(
+    target: string,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    style: number
+  ): Promise<void>;
+  addPageRectangle(
+    target: string,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    style: number
+  ): Promise<void>;
   addCommand(target: string, data: string): Promise<void>;
   addPulse(target: string, drawer: number, time: number): Promise<void>;
+  addSound(
+    target: string,
+    pattern: number,
+    repeat: number,
+    cycle: number
+  ): Promise<void>;
+  addFeedPosition(target: string, position: number): Promise<void>;
+  addHLine(
+    target: string,
+    x1: number,
+    x2: number,
+    style: number
+  ): Promise<void>;
+  addVLineBegin(target: string, x: number, style: number): Promise<number>;
+  addVLineEnd(target: string, lineId: number): Promise<void>;
+  addLayout(
+    target: string,
+    type: number,
+    width: number,
+    height: number,
+    marginTop: number,
+    marginBottom: number,
+    offsetCut: number,
+    offsetLabel: number
+  ): Promise<void>;
+  addRotateBegin(target: string): Promise<void>;
+  addRotateEnd(target: string): Promise<void>;
   addTextAlign(target: string, align: number): Promise<void>;
   addTextSize(target: string, width: number, height: number): Promise<void>;
   addTextSmooth(target: string, smooth: number): Promise<void>;

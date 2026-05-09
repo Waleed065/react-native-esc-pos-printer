@@ -23,6 +23,8 @@ public class EscPosPrinterPackage extends TurboReactPackage {
             return new EscPosPrinterModule(reactContext);
         } if(name.equals(EscPosPrinterDiscoveryModule.NAME)) {
             return new EscPosPrinterDiscoveryModule(reactContext);
+        } if(name.equals(EscPosPrinterEasySelectModule.NAME)) {
+            return new EscPosPrinterEasySelectModule(reactContext);
         } else {
             return null;
         }
@@ -48,6 +50,17 @@ public class EscPosPrinterPackage extends TurboReactPackage {
                     new ReactModuleInfo(
                             EscPosPrinterDiscoveryModule.NAME,
                             EscPosPrinterDiscoveryModule.NAME,
+                            false, // canOverrideExistingModule
+                            false, // needsEagerInit
+                            true, // hasConstants
+                            false, // isCxxModule
+                            true // isTurboModule
+            ));
+            moduleInfos.put(
+                    EscPosPrinterEasySelectModule.NAME,
+                    new ReactModuleInfo(
+                            EscPosPrinterEasySelectModule.NAME,
+                            EscPosPrinterEasySelectModule.NAME,
                             false, // canOverrideExistingModule
                             false, // needsEagerInit
                             true, // hasConstants

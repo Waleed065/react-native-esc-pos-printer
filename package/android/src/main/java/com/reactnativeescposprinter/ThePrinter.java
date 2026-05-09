@@ -244,6 +244,30 @@ public class ThePrinter implements PrinterSettingListener, ReceiveListener {
         epos2Printer_.addTextLang(lang);
     }
 
+        synchronized public void addTextRotate(int rotate) throws Epos2Exception {
+            if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
+
+            epos2Printer_.addTextRotate(rotate);
+        }
+
+        synchronized public void addTextFont(int font) throws Epos2Exception {
+            if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
+
+            epos2Printer_.addTextFont(font);
+        }
+
+        synchronized public void addHPosition(int x) throws Epos2Exception {
+            if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
+
+            epos2Printer_.addHPosition(x);
+        }
+
+        synchronized public void addFeedUnit(int unit) throws Epos2Exception {
+            if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
+
+            epos2Printer_.addFeedUnit(unit);
+        }
+
     synchronized public void addFeedLine(int line) throws Epos2Exception {
       if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
 
@@ -319,6 +343,12 @@ public class ThePrinter implements PrinterSettingListener, ReceiveListener {
 
     }
 
+        synchronized public void addLogo(int key1, int key2) throws Epos2Exception {
+            if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
+
+            epos2Printer_.addLogo(key1, key2);
+        }
+
     synchronized public void addBarcode(String data, int type, int hri, int font, int width, int height) throws Epos2Exception {
       if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
 
@@ -330,6 +360,107 @@ public class ThePrinter implements PrinterSettingListener, ReceiveListener {
 
       epos2Printer_.addSymbol(data, type, level, width, height, size);
     }
+
+        synchronized public void addPageBegin() throws Epos2Exception {
+            if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
+
+            epos2Printer_.addPageBegin();
+        }
+
+        synchronized public void addPageEnd() throws Epos2Exception {
+            if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
+
+            epos2Printer_.addPageEnd();
+        }
+
+        synchronized public void addPageArea(int x, int y, int width, int height) throws Epos2Exception {
+            if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
+
+            epos2Printer_.addPageArea(x, y, width, height);
+        }
+
+        synchronized public void addPageDirection(int direction) throws Epos2Exception {
+            if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
+
+            epos2Printer_.addPageDirection(direction);
+        }
+
+        synchronized public void addPagePosition(int x, int y) throws Epos2Exception {
+            if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
+
+            epos2Printer_.addPagePosition(x, y);
+        }
+
+        synchronized public void addPageLine(int x1, int y1, int x2, int y2, int style) throws Epos2Exception {
+            if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
+
+            epos2Printer_.addPageLine(x1, y1, x2, y2, style);
+        }
+
+        synchronized public void addPageRectangle(int x1, int y1, int x2, int y2, int style) throws Epos2Exception {
+            if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
+
+            epos2Printer_.addPageRectangle(x1, y1, x2, y2, style);
+        }
+
+        synchronized public void addSound(int pattern, int repeat, int cycle) throws Epos2Exception {
+            if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
+
+            epos2Printer_.addSound(pattern, repeat, cycle);
+        }
+
+        synchronized public void addFeedPosition(int position) throws Epos2Exception {
+            if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
+
+            epos2Printer_.addFeedPosition(position);
+        }
+
+        synchronized public void addHLine(int x1, int x2, int style) throws Epos2Exception {
+            if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
+
+            epos2Printer_.addHLine(x1, x2, style);
+        }
+
+        synchronized public int addVLineBegin(int x, int style) throws Epos2Exception {
+            if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
+
+            int[] lineId = new int[1];
+            epos2Printer_.addVLineBegin(x, style, lineId);
+
+            return lineId[0];
+        }
+
+        synchronized public void addVLineEnd(int lineId) throws Epos2Exception {
+            if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
+
+            epos2Printer_.addVLineEnd(lineId);
+        }
+
+        synchronized public void addLayout(
+            int type,
+            int width,
+            int height,
+            int marginTop,
+            int marginBottom,
+            int offsetCut,
+            int offsetLabel
+        ) throws Epos2Exception {
+            if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
+
+            epos2Printer_.addLayout(type, width, height, marginTop, marginBottom, offsetCut, offsetLabel);
+        }
+
+        synchronized public void addRotateBegin() throws Epos2Exception {
+            if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
+
+            epos2Printer_.addRotateBegin();
+        }
+
+        synchronized public void addRotateEnd() throws Epos2Exception {
+            if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);
+
+            epos2Printer_.addRotateEnd();
+        }
 
     synchronized public WritableMap getStatus() throws Epos2Exception {
       if (epos2Printer_ == null) throw new Epos2Exception(Epos2Exception.ERR_MEMORY);

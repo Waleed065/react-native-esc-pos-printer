@@ -257,6 +257,7 @@ public class EscPosPrinterDiscoveryModule extends NativeEscPosPrinterDiscoverySp
             printerData.putString("ipAddress", device.getIpAddress());
             printerData.putString("macAddress", device.getMacAddress());
             printerData.putString("bdAddress", device.getBdAddress());
+            printerData.putInt("deviceType", device.getDeviceType());
             mPrinterList.pushMap(printerData);
           }
 
